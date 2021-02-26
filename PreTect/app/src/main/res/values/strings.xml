@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">PreTect</string>
+    <string name="Chat">Chat</string>
+    <string name="Mapa">Mapa</string>
+    <string name="Agregar">Agregar</string>
+    <string name="Ajustes">Ajustes</string>
+
+</resources>
