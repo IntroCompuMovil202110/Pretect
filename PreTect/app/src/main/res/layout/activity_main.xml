@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/saludo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="20dp"
+            android:text="Hola\nPaula"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="44dp" />
+
+        <Button
+            android:id="@+id/botonPanico"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="270dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            app:backgroundTint="@color/verde_principal"
+            app:cornerRadius="270dp"
+            app:elevation="200dp"
+            app:icon="@drawable/icon_power"
+            app:iconGravity="textTop" />
+
+        <TextView
+            android:id="@+id/instrucciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_weight="1"
+            android:text="Presione 3 veces\npara activar"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24dp" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav_instructor"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:background="@color/menu_inferior"
+            android:elevation="15dp"
+            app:itemIconSize="30dp"
+            app:itemIconTint="@color/iconos"
+            app:itemTextColor="@color/white"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_navigation_menu"
+
+            >
+
+            <ImageButton
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:clickable="false"
+                android:src="@drawable/icon_power_peque"
+
+                />
+
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/avisoClave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="30dp"
+        android:background="@color/white"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:paddingHorizontal="20dp">
+
+        <TextView
+            android:id="@+id/aviso1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
+            android:text="Ingresa tu palabra segura"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/clave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aviso1"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="password_toggle">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/claveSecereta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                app:startIconDrawable="@drawable/novisible" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/cancelarClave"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/clave"
+            android:layout_toStartOf="@id/aceptarClave"
+            android:text="Cancelar" />
+
+        <Button
+            android:id="@+id/aceptarClave"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/clave"
+            android:layout_alignParentRight="true"
+
+            android:text="Aceptar" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/avisoMensaje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="30dp"
+        android:background="@color/white"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:paddingHorizontal="20dp">
+
+        <TextView
+            android:id="@+id/aviso2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
+            android:text="Mensaje a tus contactos"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aviso2"
+            app:boxBackgroundColor="@color/white"
+            >
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mensajes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/cancelarMensaje"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mensaje"
+            android:layout_toStartOf="@id/aceptarMensaje"
+            android:text="Cancelar" />
+
+        <Button
+            android:id="@+id/aceptarMensaje"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mensaje"
+            android:layout_alignParentRight="true"
+
+            android:text="Aceptar" />
+    </RelativeLayout>
+
+</FrameLayout>
