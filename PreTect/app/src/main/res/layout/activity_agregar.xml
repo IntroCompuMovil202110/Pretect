@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AgregarActivity">
+    tools:context=".AgregarActivity"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/agregarUsuarios"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_marginBottom="10sp"
+        android:textColor="@color/white"/>
+
+    <SearchView
+        android:id="@+id/userSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/buscarUsuario"
+        android:background="@color/searchBar"
+        android:layout_marginBottom="10sp">
+
+    </SearchView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

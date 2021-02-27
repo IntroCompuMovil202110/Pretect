@@ -5,5 +5,7 @@
     <string name="Mapa">Mapa</string>
     <string name="Agregar">Agregar</string>
     <string name="Ajustes">Ajustes</string>
+    <string name="agregarUsuarios">Agregar Usuarios</string>
+    <string name="buscarUsuario">Buscar usuario</string>
 
 </resources>
