@@ -28,5 +28,7 @@
     <string name="configPalabraSeñuelo">Palabra señuelo</string>
     <string name="cerrarSesion">Cerrar Sesión</string>
     <string name="nombreUsuario">Nombre de Usuario</string>
+    <string name="amigo">Nombre de un Amigo</string>
+    <string name="chatHint">Escribe un mensaje...</string>
 
 </resources>
