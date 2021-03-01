@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="531dp"
+        android:layout_height="836dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/map_placeholder" />
 </androidx.constraintlayout.widget.ConstraintLayout>

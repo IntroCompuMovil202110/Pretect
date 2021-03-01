@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +13,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pretect.entities.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +61,12 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, AjustesActivity.class));
                     return true;
                 case R.id.chat_navigation:
-                    startActivity(new Intent(this, ChatActivity.class));
+                    Intent intent = new Intent(this, MessagesActivity.class);
+                    ArrayList<User> contacts = getContacts();
+                    //Bundle bundle = new Bundle();
+                    //bundle.putSerializable("contacts", contacts);
+                    intent.putExtra("contacts", contacts);
+                    startActivity(intent);
                     return true;
                 case R.id.principal_navigation:
                     startActivity(new Intent(this, MainActivity.class));
@@ -124,6 +133,28 @@ public class MainActivity extends AppCompatActivity {
                 avisoMensaje.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private ArrayList<User> getContacts(){
+        ArrayList<User> contacts = new ArrayList<>();
+        contacts.add(new User("Sebastian","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniel","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Tibaquira","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Rodrigo","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Jorge","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Angarita","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Ana","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Maria","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Carlos","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniel Javeriana","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Paola","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Natalia","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Laura","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Amor","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniela","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Karen","user@email.com", R.drawable.photo_placeholder));
+
+        return contacts;
     }
 
 }
