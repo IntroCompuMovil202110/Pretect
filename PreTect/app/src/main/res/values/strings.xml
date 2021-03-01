@@ -7,5 +7,25 @@
     <string name="Ajustes">Ajustes</string>
     <string name="agregarUsuarios">Agregar Usuarios</string>
     <string name="buscarUsuario">Buscar usuario</string>
+    <string name="bienvenido">¡Bienvenido!</string>
+    <string name="correo">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="nombre">Nombre</string>
+    <string name="edad">Edad</string>
+    <string name="hecho">Hecho</string>
+    <string name="yaCuenta">Ya tengo una cuenta</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="noCuenta">No tengo una cuenta</string>
+    <string name="usuarioNombre">Paula</string>
+    <string name="labelTelefono">Teléfono</string>
+    <string name="usuarioTelefono">3159782207</string>
+    <string name="labelContacto">Contacto de Emergencia</string>
+    <string name="contactoTelefono">3219456271</string>
+    <string name="configuracion">Configuración</string>
+    <string name="configGrabar">Grabar audio al activar alarma</string>
+    <string name="configGeolocalizacion">Geolocalización fuera del app</string>
+    <string name="configPalabraSegura">Palabra Segura</string>
+    <string name="configPalabraSeñuelo">Palabra señuelo</string>
+    <string name="cerrarSesion">Cerrar Sesión</string>
 
 </resources>

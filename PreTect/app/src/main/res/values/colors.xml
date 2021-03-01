@@ -13,5 +13,6 @@
     <color name="iconos">#D0B2FA</color>
     <color name="background">#424242</color>
     <color name="searchBar">#40E5E5</color>
+    <color name="backgroundCard">#ECEBEB</color>
 
 </resources>
