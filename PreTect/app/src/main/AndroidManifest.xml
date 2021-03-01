@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PreTect">
-        <activity android:name=".MessagesActivity" />
+        <activity android:name=".SigninActivity"></activity>
+        <activity android:name=".SignupActivity" />
         <activity android:name=".AjustesActivity" />
         <activity android:name=".AgregarActivity" />
         <activity android:name=".MapActivity" />
