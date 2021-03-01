@@ -7,5 +7,7 @@
     <string name="Ajustes">Ajustes</string>
     <string name="agregarUsuarios">Agregar Usuarios</string>
     <string name="buscarUsuario">Buscar usuario</string>
+    <string name="agregar">Agregar</string>
+    <string name="nombreUsuario">Nombre de Usuario</string>
 
 </resources>

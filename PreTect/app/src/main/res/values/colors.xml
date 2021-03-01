@@ -11,7 +11,7 @@
     <color name="rojo_principal">#D3425C</color>
     <color name="menu_inferior">#6200ee</color>
     <color name="iconos">#D0B2FA</color>
-    <color name="background">#424242</color>
-    <color name="searchBar">#40E5E5</color>
+    <color name="background">#FFFFFF</color>
+    <color name="searchBar">#E8E5E5</color>
 
 </resources>
