@@ -27,5 +27,6 @@
     <string name="configPalabraSegura">Palabra Segura</string>
     <string name="configPalabraSeñuelo">Palabra señuelo</string>
     <string name="cerrarSesion">Cerrar Sesión</string>
+    <string name="nombreUsuario">Nombre de Usuario</string>
 
 </resources>
