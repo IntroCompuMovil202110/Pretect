@@ -137,9 +137,23 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<User> getContacts(){
         ArrayList<User> contacts = new ArrayList<>();
-        for (int i = 0; i<20; i++){
-            contacts.add(new User("user name","user@email.com", R.drawable.chat));
-        }
+        contacts.add(new User("Sebastian","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniel","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Tibaquira","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Rodrigo","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Jorge","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Angarita","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Ana","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Maria","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Carlos","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniel Javeriana","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Paola","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Natalia","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Laura","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Amor","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Daniela","user@email.com", R.drawable.photo_placeholder));
+        contacts.add(new User("Karen","user@email.com", R.drawable.photo_placeholder));
+
         return contacts;
     }
 

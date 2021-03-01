@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,15 +47,17 @@ public class PictureNameAdapter extends BaseAdapter {
         View row = convertView;
         if(row == null){
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.layout_contacts_rows, null);
+            row = inflater.inflate(R.layout.agregar_usuario, null);
 
         }
-        ImageView imageView = (ImageView) row.findViewById(R.id.userPicture);
+        ImageView imageView = (ImageView) row.findViewById(R.id.userImage);
         TextView textView = (TextView) row.findViewById(R.id.userName);
+        Button addUser = (Button) row.findViewById(R.id.addUserButton);
+
 
         imageView.setImageResource(contacts.get(position).getPicture());
         textView.setText(contacts.get(position).getName());
-
+        addUser.setVisibility(View.GONE);
         return row;
     }
 }

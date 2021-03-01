@@ -1,7 +1,9 @@
 package com.example.pretect;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,8 +27,8 @@ public class ChatActivity extends AppCompatActivity {
 
         currentUser = (User) getIntent().getExtras().get("user");
 
-        chatTitle = findViewById(R.id.chatUserName);
-        chatEntries = findViewById(R.id.chatEntries);
+        chatTitle = (TextView) findViewById(R.id.chatUserName);
+        chatEntries = (LinearLayout) findViewById(R.id.chatEntries);
         send = (ImageButton) findViewById(R.id.sendButton);
         input = (TextInputEditText) findViewById(R.id.chatTextInput); 
         
@@ -36,7 +38,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TextView newEntry = new TextView(getBaseContext());
                 newEntry.setPadding(5,5,5,5);
-                newEntry.setBackgroundResource(R.drawable.two_sided_border);
+                //newEntry.setBackgroundResource(R.drawable.two_sided_border);
+                //newEntry.setBackgroundColor(Color.GRAY);
                 newEntry.setText(input.getEditableText().toString());
 
                 chatEntries.addView(newEntry);
