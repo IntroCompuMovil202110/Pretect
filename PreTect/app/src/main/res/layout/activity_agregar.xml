@@ -4,27 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AgregarActivity"
+    android:layout_marginTop="20dp"
+    android:background="@color/background"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@color/background">
+    tools:context=".AgregarActivity">
 
     <SearchView
         android:id="@+id/userSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:queryHint="@string/buscarUsuario"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:background="@color/searchBar"
-        android:layout_marginBottom="10sp">
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/buscarUsuario">
 
     </SearchView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="721dp"
+        android:padding="20dp">
 
     </androidx.recyclerview.widget.RecyclerView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_instructor"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/menu_inferior"
+        android:elevation="15dp"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/iconos"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_navigation_menu"
+
+        >
+
+        <ImageButton
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:clickable="false"
+            android:src="@drawable/icon_power_peque"
+
+            />
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>

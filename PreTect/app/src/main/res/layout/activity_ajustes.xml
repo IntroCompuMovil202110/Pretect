@@ -10,12 +10,13 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,45 +40,44 @@
                 android:textSize="30sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="325dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
                 android:hint="@string/labelTelefono"
-                app:boxBackgroundColor="@color/backgroundCard"
-                app:boxStrokeWidth="@dimen/material_emphasis_medium"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
                 app:endIconDrawable="@drawable/ic_baseline_edit_24"
-                app:endIconMode="custom">
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black"
+                android:layout_gravity="center"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phone"
-                    android:layout_width="325dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:inputType="phone"
-                    android:text="@string/usuarioTelefono" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/filledTextField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="325dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:hint="@string/labelContacto"
-                app:boxBackgroundColor="@color/backgroundCard"
-                app:boxStrokeWidth="@dimen/material_emphasis_medium"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
                 app:endIconDrawable="@drawable/ic_baseline_edit_24"
-                app:endIconMode="custom">
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emergencyContact"
-                    android:layout_width="325dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:inputType="phone"
-                    android:text="@string/contactoTelefono" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <View
                 android:id="@+id/tile_divider"
@@ -96,24 +96,25 @@
                 android:textColor="#363636"
                 android:textSize="30sp" />
 
-
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/recordSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
+                android:checked="true"
                 android:text="@string/configGrabar"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:thumbTint="@color/purple_500"
+                app:trackTint="@color/purple_200" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/geolocationSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/configGeolocalizacion"
                 android:textSize="16sp"
-                app:thumbTint="@color/purple_500"
-                app:trackTint="@color/purple_200" />
+                app:thumbTint="@color/purple_200"
+                app:trackTint="@color/iconos" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -135,7 +136,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outlinedTextField2"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
-                android:layout_marginBottom="60dp"
+                android:layout_marginBottom="80dp"
                 android:text="@string/cerrarSesion"
                 android:textColor="@color/rojo_principal" />
 

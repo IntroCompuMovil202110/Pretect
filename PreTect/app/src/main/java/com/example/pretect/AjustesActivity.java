@@ -7,11 +7,13 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
 public class AjustesActivity extends AppCompatActivity {
 
     TextView phone, emergencyContact, safeWord, baitWord;
     Button logout;
-    Switch recordSwitch, geolocationSwitch;
+    SwitchMaterial recordSwitch, geolocationSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
