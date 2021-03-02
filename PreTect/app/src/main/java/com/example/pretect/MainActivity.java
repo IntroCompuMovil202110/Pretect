@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +13,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pretect.Utils.Functions;
+import com.example.pretect.entities.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     String claveFalsa = "falsa";
     String claveVerdadera = "verdadera";
     BottomNavigationView menuInferior;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,24 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.mapa_navigation:
-                    startActivity(new Intent(this, MapActivity.class));
-                    return true;
-                case R.id.agregar_navigation:
-                    startActivity(new Intent(this, AgregarActivity.class));
-                    return true;
-                case R.id.ajustes_navigation:
-                    startActivity(new Intent(this, AjustesActivity.class));
-                    return true;
-                case R.id.chat_navigation:
-                    startActivity(new Intent(this, ChatActivity.class));
-                    return true;
-                case R.id.principal_navigation:
-                    startActivity(new Intent(this, MainActivity.class));
-                    return true;
-            }
-            return false;
+            return Functions.navegacion(this, item);
         });
 
         panico.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
                     contador--;
                     if(contador==0){
                         avisoClave.setVisibility(View.VISIBLE);
-
-
 
                     }
                 }
@@ -125,5 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 }

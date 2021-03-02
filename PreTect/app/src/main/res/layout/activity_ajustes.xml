@@ -6,4 +6,193 @@
     android:layout_height="match_parent"
     tools:context=".AjustesActivity">
 
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/photo_placeholder" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/usuarioNombre"
+                android:textColor="#363636"
+                android:textSize="30sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="325dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/labelTelefono"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
+                app:endIconDrawable="@drawable/ic_baseline_edit_24"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black"
+                android:layout_gravity="center"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="325dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:hint="@string/labelContacto"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
+                app:endIconDrawable="@drawable/ic_baseline_edit_24"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emergencyContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <View
+                android:id="@+id/tile_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="?android:attr/actionBarDivider" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/configuracion"
+                android:textColor="#363636"
+                android:textSize="30sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/recordSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="@string/configGrabar"
+                android:textSize="16sp"
+                app:thumbTint="@color/purple_500"
+                app:trackTint="@color/purple_200" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/geolocationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:text="@string/configGeolocalizacion"
+                android:textSize="16sp"
+                app:thumbTint="@color/purple_200"
+                app:trackTint="@color/iconos" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/configPalabraSegura"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
+                app:endIconDrawable="@drawable/visible"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/safeWord"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/configPalabraSeñuelo"
+                app:boxStrokeColor="@color/material_on_background_emphasis_medium"
+                app:endIconDrawable="@drawable/visible"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/baitWord"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/logout"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="80dp"
+                android:text="@string/cerrarSesion"
+                android:textColor="@color/rojo_principal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_instructor"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:background="@color/menu_inferior"
+        android:elevation="15dp"
+        app:itemIconSize="30dp"
+
+        app:itemIconTint="@color/iconos"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu">
+
+        <ImageButton
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:clickable="false"
+            android:src="@drawable/icon_power_peque"
+
+            />
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@
         android:id="@+id/chat_navigation"
         android:enabled="true"
         android:icon="@drawable/chat"
-        android:title="@string/Mapa"/>
+        android:title="@string/Chat"/>
     <item
         android:id="@+id/mapa_navigation"
         android:enabled="true"
