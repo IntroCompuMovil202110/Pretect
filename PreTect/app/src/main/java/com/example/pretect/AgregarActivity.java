@@ -4,12 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.SearchView;
+
+import com.example.pretect.Utils.Functions;
+import com.example.pretect.entities.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 public class AgregarActivity extends AppCompatActivity {
     SearchView userSearch;
-    RecyclerView userView;
-
+    ListView conversationList;
+    BottomNavigationView menuInferior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +26,15 @@ public class AgregarActivity extends AppCompatActivity {
 
         //Inflate
         userSearch=findViewById(R.id.userSearch);
-        userView=findViewById(R.id.userView);
+        ArrayList<User> contacts = (ArrayList<User>) getIntent().getSerializableExtra("contacts");
+
+        conversationList = (ListView) findViewById(R.id.conversationList);
+        conversationList.setAdapter(new PictureNameAdapter(this, contacts));
+
+        menuInferior = findViewById(R.id.bottom_nav_instructor);
+        menuInferior.setOnNavigationItemSelectedListener(item -> {
+            return Functions.navegacion(this, item);
+        });
 
         initViews();
     }

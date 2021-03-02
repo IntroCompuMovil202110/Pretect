@@ -22,17 +22,21 @@
 
     </SearchView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/userView"
-        android:layout_width="match_parent"
-        android:layout_height="721dp"
-        android:padding="20dp">
+    <ListView
+        android:id="@+id/conversationList"
+        android:layout_width="407dp"
+        android:layout_height="723dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleMessages" />
 
-    </androidx.recyclerview.widget.RecyclerView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_instructor"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_gravity="bottom"
         android:background="@color/menu_inferior"
         android:elevation="15dp"
         app:itemIconSize="30dp"
@@ -44,14 +48,16 @@
         >
 
         <ImageButton
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            style="@android:style/Widget.Holo.Light.ImageButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:clickable="false"
-            android:src="@drawable/icon_power_peque"
+            android:background="@color/menu_inferior"
 
-            />
+            android:clickable="false"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/home_button_foreground"
+            tools:src="@mipmap/home_button_foreground" />
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

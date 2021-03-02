@@ -47,14 +47,16 @@
         app:menu="@menu/bottom_navigation_menu">
 
         <ImageButton
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            style="@android:style/Widget.Holo.Light.ImageButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:clickable="false"
-            android:src="@drawable/icon_power_peque"
+            android:background="@color/menu_inferior"
 
-            />
+            android:clickable="false"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/home_button_foreground"
+            tools:src="@mipmap/home_button_foreground" />
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 </androidx.constraintlayout.widget.ConstraintLayout>
