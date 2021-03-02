@@ -26,10 +26,10 @@ public class AgregarActivity extends AppCompatActivity {
 
         //Inflate
         userSearch=findViewById(R.id.userSearch);
-        ArrayList<User> contacts = (ArrayList<User>) getIntent().getSerializableExtra("contacts");
+        //ArrayList<User> contacts = (ArrayList<User>) getIntent().getSerializableExtra("contacts");
 
         conversationList = (ListView) findViewById(R.id.conversationList);
-        conversationList.setAdapter(new PictureNameAdapter(this, contacts));
+        //conversationList.setAdapter(new PictureNameAdapter(this, contacts));
 
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
