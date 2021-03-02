@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pretect.Utils.Functions;
 import com.example.pretect.entities.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     String claveFalsa = "falsa";
     String claveVerdadera = "verdadera";
     BottomNavigationView menuInferior;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,29 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.mapa_navigation:
-                    startActivity(new Intent(this, MapActivity.class));
-                    return true;
-                case R.id.agregar_navigation:
-                    startActivity(new Intent(this, AgregarActivity.class));
-                    return true;
-                case R.id.ajustes_navigation:
-                    startActivity(new Intent(this, AjustesActivity.class));
-                    return true;
-                case R.id.chat_navigation:
-                    Intent intent = new Intent(this, MessagesActivity.class);
-                    ArrayList<User> contacts = getContacts();
-                    //Bundle bundle = new Bundle();
-                    //bundle.putSerializable("contacts", contacts);
-                    intent.putExtra("contacts", contacts);
-                    startActivity(intent);
-                    return true;
-                case R.id.principal_navigation:
-                    startActivity(new Intent(this, MainActivity.class));
-                    return true;
-            }
-            return false;
+            return Functions.navegacion(this, item);
         });
 
         panico.setOnClickListener(new View.OnClickListener() {
@@ -88,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
                     contador--;
                     if(contador==0){
                         avisoClave.setVisibility(View.VISIBLE);
-
-
 
                     }
                 }
@@ -135,26 +113,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<User> getContacts(){
-        ArrayList<User> contacts = new ArrayList<>();
-        contacts.add(new User("Sebastian","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Daniel","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Tibaquira","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Rodrigo","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Jorge","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Angarita","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Ana","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Maria","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Carlos","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Daniel Javeriana","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Paola","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Natalia","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Laura","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Amor","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Daniela","user@email.com", R.drawable.photo_placeholder));
-        contacts.add(new User("Karen","user@email.com", R.drawable.photo_placeholder));
 
-        return contacts;
-    }
 
 }

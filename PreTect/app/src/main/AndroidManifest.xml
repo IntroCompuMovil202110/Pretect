@@ -9,20 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PreTect">
-        <activity android:name=".SigninActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".AjustesActivity" />
-        <activity android:name=".AgregarActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".MessagesActivity"/>
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".SplashActivity">MainActivity
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SigninActivity" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".AjustesActivity" />
+        <activity android:name=".AgregarActivity" />
+        <activity android:name=".MapActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".ChatActivity" />
     </application>
 
 </manifest>

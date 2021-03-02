@@ -10,7 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.pretect.AbstractClass.PictureName;
+import com.example.pretect.Utils.Functions;
 import com.example.pretect.entities.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 public class MessagesActivity extends AppCompatActivity {
 
     ListView conversationList;
+    BottomNavigationView menuInferior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,11 @@ public class MessagesActivity extends AppCompatActivity {
 
         conversationList = (ListView) findViewById(R.id.conversationList);
         conversationList.setAdapter(new PictureNameAdapter(this, contacts));
+
+        menuInferior = findViewById(R.id.bottom_nav_instructor);
+        menuInferior.setOnNavigationItemSelectedListener(item -> {
+            return Functions.navegacion(this, item);
+        });
 
         conversationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

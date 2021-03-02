@@ -53,10 +53,10 @@
                 android:hint="@string/correo">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/correo"
                     android:layout_width="325dp"
                     android:layout_height="60dp"
-                    android:inputType="textEmailAddress"
-                    />
+                    android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,9 +70,10 @@
                 android:hint="@string/password">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
                     android:layout_width="325dp"
                     android:layout_height="60dp"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,9 +87,10 @@
                 android:hint="@string/nombre">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nombre"
                     android:layout_width="325dp"
                     android:layout_height="60dp"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,9 +104,10 @@
                 android:hint="@string/edad">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edad"
                     android:layout_width="325dp"
                     android:layout_height="60dp"
-                    android:inputType="number"/>
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

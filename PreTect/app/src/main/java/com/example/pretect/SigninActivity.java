@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 public class SigninActivity extends AppCompatActivity {
 
-    TextView emailTextFieldSI, passwordTextFieldSI;
+    TextInputEditText correo, password;
     Button signinButton, noAccountButton;
 
     @Override
@@ -18,16 +20,26 @@ public class SigninActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
-        emailTextFieldSI = findViewById(R.id.emailTextFieldSI);
-        passwordTextFieldSI = findViewById(R.id.passwordTextFieldSI);
-        signinButton = findViewById(R.id.signupButton);
+        correo = (TextInputEditText)findViewById(R.id.correo);
+        password = (TextInputEditText)findViewById(R.id.password);
+        signinButton = findViewById(R.id.signinButton);
         noAccountButton = findViewById(R.id.hasAccountButton);
+
+
 
         //To Signip
         noAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), SignupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        signinButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(intent);
             }
         });
