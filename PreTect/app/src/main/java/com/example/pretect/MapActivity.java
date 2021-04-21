@@ -88,12 +88,7 @@ public class MapActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case LOCATION_PERMISSION_ID: {
-                if (requestCode == RESULT_OK) {
-                    loadMapScene();
-                } else {
-                    Toast.makeText(this,"Sin acceso a localización, hardware deshabilitado!",Toast.LENGTH_LONG).show();
-                }
-                return;
+                loadMapScene();
             }
         }
     }
