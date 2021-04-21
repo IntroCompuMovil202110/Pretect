@@ -73,6 +73,7 @@ public class AjustesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ajustes);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = database.getInstance().getReference().child(PATH_USERS);
 
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
@@ -93,8 +94,8 @@ public class AjustesActivity extends AppCompatActivity {
 
 
         //Read user data
-        userEmail = mAuth.getCurrentUser().getEmail();
-        readOnce(userEmail);
+        //userEmail = mAuth.getCurrentUser().getEmail();
+        //readOnce(userEmail);
 
         //Select picture from files
         photo.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +120,6 @@ public class AjustesActivity extends AppCompatActivity {
         });
 
         //logout
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,14 +137,14 @@ public class AjustesActivity extends AppCompatActivity {
     }
 
     private void readOnce(String userEmail) {
-        DatabaseReference rootRef = database.getInstance().getReference();
-        mDatabase = rootRef.child(PATH_USERS);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot keyId: snapshot.getChildren()) {
                     if (keyId.child("email").getValue().equals(userEmail)) {
                         userKey = keyId.getKey();
+                        nameUser.setText(keyId.child("name").getValue(String.class));
+
                         nameDB = keyId.child("name").getValue(String.class);
                         baitWordDB = keyId.child("bait_phrase").getValue(String.class);
                         safeWordDB = keyId.child("safety_phrase").getValue(String.class);
@@ -269,22 +269,23 @@ public class AjustesActivity extends AppCompatActivity {
     }
 
     private boolean isPhotoChanged(){
-        final boolean[] res = {};
-        res[0] = false;
-        final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(uriPicture));
-        fileRef.putFile(uriPicture).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        mDatabase.child(userKey).child("picture").setValue(uri.toString());
-                        res[0] = true;
-                    }
-                });
-            }
-        });
-        return res[0];
+        if(!uriPicture.toString().isEmpty()){
+            final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(uriPicture));
+            fileRef.putFile(uriPicture).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            mDatabase.child(userKey).child("picture").setValue(uri.toString());
+                        }
+                    });
+                }
+            });
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private String getFileExtension(Uri mUri){
@@ -297,5 +298,12 @@ public class AjustesActivity extends AppCompatActivity {
 
     private void setPhoto(String uri){
         Picasso.get().load(uri).into(photo);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userEmail = mAuth.getCurrentUser().getEmail();
+        readOnce(userEmail);
     }
 }
