@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pretect">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PreTect">
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".SplashActivity">MainActivity
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,6 +30,10 @@
         <activity android:name=".MapActivity" />
         <activity android:name=".MessagesActivity" />
         <activity android:name=".ChatActivity" />
+
+        <meta-data android:name="com.here.sdk.access_key_id" android:value="WfWWrUTTGUsDqU9NF1SeTg" />
+        <meta-data android:name="com.here.sdk.access_key_secret" android:value="c5hlzKtfFUYlv1_Sm23kSKeVLG3BlcKsGn5KwWr_3OLYDEMgVXsvlrIzfx36Syfn9j4qvKbVz-qSGwC_WAdhUA" />
+
     </application>
 
 </manifest>
