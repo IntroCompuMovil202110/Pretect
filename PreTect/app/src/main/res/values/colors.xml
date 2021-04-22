@@ -14,5 +14,6 @@
     <color name="backgroundCard">#ECEBEB</color>
     <color name="background">#FFFFFF</color>
     <color name="searchBar">#E8E5E5</color>
+    <color name="centerButton">#D3CACA</color>
 
 </resources>
