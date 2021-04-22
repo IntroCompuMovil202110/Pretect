@@ -64,7 +64,7 @@ public class AjustesActivity extends AppCompatActivity {
     BottomNavigationView menuInferior;
     String userEmail;
 
-    private String nameDB, phoneDB = "3179875123", emergencyContactDB = "3216489723", baitWordDB = "hola", safeWordDB = "nola", photoDB, userKey;
+    private String nameDB, phoneDB = "", emergencyContactDB = "", baitWordDB = "", safeWordDB = "", photoDB, userKey;
     private Uri uriPicture;
 
     @Override
@@ -146,10 +146,23 @@ public class AjustesActivity extends AppCompatActivity {
                         nameUser.setText(keyId.child("name").getValue(String.class));
 
                         nameDB = keyId.child("name").getValue(String.class);
+
                         baitWordDB = keyId.child("bait_phrase").getValue(String.class);
+                        if (baitWordDB == null) {
+                            baitWordDB = "";
+                        }
                         safeWordDB = keyId.child("safety_phrase").getValue(String.class);
+                        if (safeWordDB == null) {
+                            safeWordDB = "";
+                        }
                         phoneDB = keyId.child("phone").getValue(String.class);
+                        if (phoneDB == null) {
+                            phoneDB = "";
+                        }
                         emergencyContactDB = keyId.child("emergency_contact").getValue(String.class);
+                        if (emergencyContactDB == null) {
+                            emergencyContactDB = "";
+                        }
                         photoDB = keyId.child("picture").getValue(String.class);
 
                         break;
@@ -201,9 +214,13 @@ public class AjustesActivity extends AppCompatActivity {
             try {
                 final Uri imageUri = data.getData();
                 uriPicture = imageUri;
+
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                photo.invalidate();
                 photo.setImageBitmap(selectedImage);
+                Log.i("entrando",selectedImage.toString());
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -214,7 +231,7 @@ public class AjustesActivity extends AppCompatActivity {
         //si tengo el permiso
         if (ContextCompat.checkSelfPermission(this, permGaleria) == PackageManager.PERMISSION_GRANTED) {
             Intent pickImage = new Intent(Intent.ACTION_PICK);
-            Log.i("entrando","ayuda");
+
             pickImage.setType("image/*");
             startActivityForResult(pickImage, IMAGE_PICKER_REQUEST);
         }
@@ -227,7 +244,7 @@ public class AjustesActivity extends AppCompatActivity {
         boolean bwC = isBaitWordChanged();
         boolean phC = isPhotoChanged();
 
-        if( pC || ecC || swC || bwC || phC){
+        if( pC || ecC || swC || bwC){
             readOnce(userEmail);
             Toast.makeText(this, "Se han actualizado los datos", Toast.LENGTH_SHORT).show();
         }
@@ -235,41 +252,46 @@ public class AjustesActivity extends AppCompatActivity {
     }
 
     private boolean isPhoneChanged(){
-        if(!phoneDB.equals(phone.getText().toString())){
+        boolean res = false;
+        if (!phoneDB.equals(phone.getText().toString())) {
             String number = phone.getText().toString();
             mDatabase.child(userKey).child("phone").setValue(number);
-            return true;
+            res = true;
         }
-        return false;
+
+        return res;
     }
 
     private boolean isEmergencyContactChanged(){
+        boolean res = false;
         if (!emergencyContactDB.equals(emergencyContact.getText().toString())) {
             String number = emergencyContact.getText().toString();
             mDatabase.child(userKey).child("emergency_contact").setValue(number);
-            return true;
+            res = true;
         }
-        return false;
+        return res;
     }
 
     private boolean isSafeWordChanged(){
+        boolean res = false;
         if (!safeWordDB.equals(safeWord.getText().toString())) {
             mDatabase.child(userKey).child("safety_phrase").setValue(safeWord.getText().toString());
-            return true;
+            res = true;
         }
-        return false;
+        return res;
     }
 
     private boolean isBaitWordChanged(){
+        boolean res = false;
         if (!baitWordDB.equals(baitWord.getText().toString())) {
             mDatabase.child(userKey).child("bait_phrase").setValue(baitWord.getText().toString());
-            return true;
+            res = true;
         }
-        return false;
+        return res;
     }
 
     private boolean isPhotoChanged(){
-        if(!uriPicture.toString().isEmpty()){
+        if(uriPicture != null){
             final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(uriPicture));
             fileRef.putFile(uriPicture).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -277,7 +299,7 @@ public class AjustesActivity extends AppCompatActivity {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            mDatabase.child(userKey).child("picture").setValue(uri.toString());
+                            if(uri != null) mDatabase.child(userKey).child("picture").setValue(uri.toString());
                         }
                     });
                 }

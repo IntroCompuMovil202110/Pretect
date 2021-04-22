@@ -114,7 +114,6 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("AUTH", "Supossed sent from logout");
         updateUI(mAuth.getCurrentUser());
     }
 }

@@ -55,7 +55,7 @@ public class PictureNameAdapter extends BaseAdapter {
         Button addUser = (Button) row.findViewById(R.id.addUserButton);
 
 
-        imageView.setImageResource(contacts.get(position).getPicture());
+        //imageView.setImageResource(contacts.get(position).getPicture());
         textView.setText(contacts.get(position).getName());
         addUser.setVisibility(View.GONE);
         return row;

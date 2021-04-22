@@ -2,7 +2,6 @@ package com.example.pretect.entities;
 
 import com.example.pretect.AbstractClass.PictureName;
 import com.example.pretect.R;
-import com.example.pretect.interfaces.ListablePictureName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class User extends PictureName implements Serializable {
     private String safety_phrase;
     private String phone;
     private String emergency_contact;
-    private int profile_picture;
+    private String profile_picture;
     private boolean state;
     private int age;
     private ArrayList<User> contacts;
@@ -34,7 +33,7 @@ public class User extends PictureName implements Serializable {
     }
 
     @Override
-    public int getPicture() {
+    public String getPicture() {
         return profile_picture;
     }
 
