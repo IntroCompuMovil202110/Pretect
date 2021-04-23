@@ -1,0 +1,30 @@
+package com.example.pretect.Utils;
+
+public class FindFriends {
+
+    public String picture, name, email;
+
+    public FindFriends() {
+    }
+
+    /*public FindFriends(String picture, String name) {
+        this.picture = picture;
+        this.name = name;
+    }*/
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+}
