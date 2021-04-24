@@ -89,7 +89,6 @@ public class MapActivity extends AppCompatActivity {
     private MapMarker myMarker=null;
 
 
-
     //Life Cycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
