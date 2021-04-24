@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
-    EditText correo, password, nombre, edad;
+    EditText correo, password, nombre, edad, palabraSegura, palabraSeñuelo;
     Button signupButton, hasAccountButton;
 
     public static final String TAG = "AUTH";
@@ -44,6 +44,8 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         nombre = findViewById(R.id.nombre);
         edad = findViewById(R.id.edad);
+        palabraSegura = findViewById(R.id.safeWordInput);
+        palabraSeñuelo = findViewById(R.id.baitWordInput);
         signupButton = findViewById(R.id.signupButton);
         hasAccountButton = findViewById(R.id.hasAccountButton);
 
@@ -65,8 +67,9 @@ public class SignupActivity extends AppCompatActivity {
                 //User data
                 String userName = nombre.getText().toString();
                 int age = Integer.parseInt(edad.getText().toString());
-                Log.i("USER", em+userName+String.valueOf(age));
-                user = new User(userName, em, age);
+                String userSafeWord = palabraSegura.getText().toString();
+                String userBaitWord = palabraSeñuelo.getText().toString();
+                user = new User(userName, em, age, userSafeWord, userBaitWord);
 
             }
         });

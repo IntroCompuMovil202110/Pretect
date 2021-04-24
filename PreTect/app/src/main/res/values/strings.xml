@@ -25,7 +25,7 @@
     <string name="configGrabar">Grabar audio al activar alarma</string>
     <string name="configGeolocalizacion">Geolocalización fuera del app</string>
     <string name="configPalabraSegura">Palabra Segura</string>
-    <string name="configPalabraSeñuelo">Palabra señuelo</string>
+    <string name="configPalabraSeñuelo">Palabra Señuelo</string>
     <string name="cerrarSesion">Cerrar Sesión</string>
     <string name="nombreUsuario">Nombre de Usuario</string>
     <string name="amigo">Nombre de un Amigo</string>
