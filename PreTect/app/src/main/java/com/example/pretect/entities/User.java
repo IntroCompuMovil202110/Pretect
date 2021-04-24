@@ -31,7 +31,7 @@ public class User extends PictureName implements Serializable {
     }
 
     public User(String user_name, String email, int age, String safety_phrase, String bait_phrase) {
-        this.user_name = user_name;
+        this.name = user_name;
         this.email = email;
         this.state = state;
         this.age = age;

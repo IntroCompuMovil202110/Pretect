@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.entities.LocationPermissionsRequestor;
 import com.example.pretect.entities.PlatformPositioningProvider;
@@ -26,7 +24,6 @@ import com.here.sdk.core.Anchor2D;
 import com.here.sdk.core.Color;
 import com.here.sdk.core.GeoCoordinates;
 import com.here.sdk.core.GeoPolyline;
-import com.here.sdk.core.Metadata;
 import com.here.sdk.core.Point2D;
 import com.here.sdk.core.errors.InstantiationErrorException;
 import com.here.sdk.gestures.GestureState;
@@ -50,11 +47,9 @@ import com.here.sdk.routing.RoutingEngine;
 import com.here.sdk.routing.RoutingError;
 import com.here.sdk.routing.Section;
 import com.here.sdk.routing.Waypoint;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 
 public class MapActivity extends AppCompatActivity {
@@ -180,7 +175,7 @@ public class MapActivity extends AppCompatActivity {
         mapView.getMapScene().loadScene(MapScheme.NORMAL_DAY, mapError -> {
             if(mapError == null){
                 if(!locationEnable){
-                    mapView.getCamera().lookAt(new GeoCoordinates(0,0),5000);
+                    mapView.getCamera().lookAt(new GeoCoordinates(0,0),2500);
                 }
                 onClickListener();
                 setTapGestureHandler();
@@ -337,7 +332,7 @@ public class MapActivity extends AppCompatActivity {
                     Anchor2D anchor2D=new Anchor2D(0.5f,1.0f);
                     myMarker=new MapMarker(new GeoCoordinates(location.getLatitude(),location.getLongitude()),myMapImage,anchor2D);
                     mapView.getMapScene().addMapMarker(myMarker);
-                    mapView.getCamera().lookAt(new GeoCoordinates(location.getLatitude(),location.getLongitude()),5000);
+                    mapView.getCamera().lookAt(new GeoCoordinates(location.getLatitude(),location.getLongitude()),2500);
                 }else{
                     myMarker.setCoordinates(new GeoCoordinates(location.getLatitude(),location.getLongitude()));
                 }
@@ -386,7 +381,7 @@ public class MapActivity extends AppCompatActivity {
     //Extra Services
     public void centerMap(View view){
         if(locationEnable){
-            mapView.getCamera().lookAt(new GeoCoordinates(myLocation.getLatitude(),myLocation.getLongitude()),5000);
+            mapView.getCamera().lookAt(new GeoCoordinates(myLocation.getLatitude(),myLocation.getLongitude()),2500);
         }
     }
 
