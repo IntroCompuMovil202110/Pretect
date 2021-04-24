@@ -30,10 +30,10 @@ public class Functions {
                     return true;
                 case R.id.chat_navigation:
                     Intent intent = new Intent(context, MessagesActivity.class);
-                    ArrayList<User> contacts = User.getContacts();
+                    //ArrayList<User> contacts = User.getContacts();
                     //Bundle bundle = new Bundle();
                     //bundle.putSerializable("contacts", contacts);
-                    intent.putExtra("contacts", contacts);
+                    //intent.putExtra("contacts", contacts);
                     context.startActivity(intent);
                     return true;
                 case R.id.principal_navigation:

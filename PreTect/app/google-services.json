@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "584805333082",
+    "project_id": "pretect-a4da3",
+    "storage_bucket": "pretect-a4da3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584805333082:android:621bed864e609319d30063",
+        "android_client_info": {
+          "package_name": "com.example.pretect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584805333082-ac3bdt1cu3a7ogg9ad1mm4e2qrjfestk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1h662QmfVxgWIEqtMd4y_ClAR3KD8fTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584805333082-ac3bdt1cu3a7ogg9ad1mm4e2qrjfestk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,7 +18,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/PreTect" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -32,5 +32,19 @@
       <updated>1614431327063</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1174" y="355" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1619237902439">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="1174" y="355" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.3440.1400@0.0.3440.1400" timestamp="1619237902439" />
+    <state x="1539" y="446" key="AndroidProcessChooserDialog" timestamp="1619237906175">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="1539" y="446" key="AndroidProcessChooserDialog/0.0.3440.1400@0.0.3440.1400" timestamp="1619237906175" />
+    <state x="1500" y="455" key="FileChooserDialogImpl" timestamp="1619238031117">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="1500" y="455" key="FileChooserDialogImpl/0.0.3440.1400@0.0.3440.1400" timestamp="1619238031117" />
   </component>
 </project>
