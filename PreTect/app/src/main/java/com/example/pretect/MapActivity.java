@@ -19,7 +19,14 @@ import android.widget.Toast;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.entities.LocationPermissionsRequestor;
 import com.example.pretect.entities.PlatformPositioningProvider;
+import com.example.pretect.entities.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.here.sdk.core.Anchor2D;
 import com.here.sdk.core.Color;
 import com.here.sdk.core.GeoCoordinates;
@@ -70,7 +77,7 @@ public class MapActivity extends AppCompatActivity {
 
     //Map
     private MapView mapView;
-    private MapImage othersMapMarker;
+    private MapImage othersMapImage;
     private Button centerButton;
     MapMarker clickMarker=null;
     MapImage clickImage;
@@ -83,6 +90,12 @@ public class MapActivity extends AppCompatActivity {
     private MapImage myMapImage;
     private MapMarker myMarker=null;
 
+    //DataBase
+    private final String PATH_USERS="users";
+    FirebaseAuth mAuth;
+    FirebaseDatabase database;
+    DatabaseReference reference;
+
 
     //Life Cycle
     @Override
@@ -93,6 +106,11 @@ public class MapActivity extends AppCompatActivity {
         //Inflate
         centerButton= findViewById(R.id.centerButton);
         centerButton.setVisibility(View.INVISIBLE);
+        othersMapImage= MapImageFactory.fromResource(this.getResources(),R.drawable.others_marker);
+
+        //DataBase
+        mAuth= FirebaseAuth.getInstance();
+        database= FirebaseDatabase.getInstance();
 
         //Menu Bar
         menuInferior = findViewById(R.id.bottom_nav_instructor);
@@ -110,6 +128,8 @@ public class MapActivity extends AppCompatActivity {
         // Get a MapViewLite instance from the layout.
         mapView = findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
+
+        readOnce();
 
         //Permissions
         handleAndroidPermissions();
@@ -338,6 +358,34 @@ public class MapActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //ContactsLocation
+    private void readOnce(){
+        reference=database.getReference(PATH_USERS);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot single: snapshot.getChildren()){
+                    User user = single.getValue(User.class);
+                    addUserMarker(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void addUserMarker(User user) {
+        if(user.getLatitude()!= Double.MIN_VALUE && user.getLongitude()!=Double.MIN_VALUE){
+            Anchor2D anchor2D=new Anchor2D(0.5f,1.0f);
+            MapMarker othersMapMarker=new MapMarker(new GeoCoordinates(0,0),othersMapImage,anchor2D);
+            mapView.getMapScene().addMapMarker(othersMapMarker);
+        }
     }
 
     //Light Sensor

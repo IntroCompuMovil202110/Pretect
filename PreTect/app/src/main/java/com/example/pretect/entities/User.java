@@ -21,7 +21,8 @@ public class User extends PictureName implements Serializable {
     private int age;
     private ArrayList<User> contacts;
     private ArrayList<Recording> recordings;
-    private Location location;
+    private double latitude;
+    private double longitude;
     private boolean grabarAudio;
 
     public User(String name, String email, int age) {
@@ -37,6 +38,8 @@ public class User extends PictureName implements Serializable {
         this.age = age;
         this.safety_phrase = safety_phrase;
         this.bait_phrase = bait_phrase;
+        this.latitude=Double.MIN_VALUE;
+        this.longitude=Double.MIN_VALUE;
     }
 
     public User() {
@@ -115,5 +118,20 @@ public class User extends PictureName implements Serializable {
         this.emergency_contact = emergencyContact;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }
 
