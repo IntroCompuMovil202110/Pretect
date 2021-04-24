@@ -37,10 +37,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO: Prueba Mapas (QUITAR)
-        Intent intent=new Intent(this,MapActivity.class);
-        startActivity(intent);
-
         panico = findViewById(R.id.botonPanico);
         aceptarClave = findViewById(R.id.aceptarClave);
         cancelarClave = findViewById(R.id.cancelarClave);
