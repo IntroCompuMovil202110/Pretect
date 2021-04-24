@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+
+        <shape
+            android:innerRadiusRatio="4"
+            android:shape="ring"
+            android:thicknessRatio="6"
+            android:useLevel="false">
+            <solid android:color="@color/centerButton"/>
+            <size
+                android:width="25dip"
+                android:height="25dip"></size>
+        </shape>
+    </item>
+</layer-list>
