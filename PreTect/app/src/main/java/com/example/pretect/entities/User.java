@@ -1,5 +1,7 @@
 package com.example.pretect.entities;
 
+import android.app.Application;
+
 import com.example.pretect.AbstractClass.PictureName;
 import com.example.pretect.R;
 
@@ -7,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User extends PictureName implements Serializable {
-    private String user_name;
+    private String name;
     private String password;
     private String email;
     private String bait_phrase;
@@ -20,17 +22,47 @@ public class User extends PictureName implements Serializable {
     private ArrayList<User> contacts;
     private ArrayList<Recording> recordings;
     private Location location;
+    private boolean grabarAudio;
 
-    public User(String user_name, String email, int age) {
-        this.user_name = user_name;
+    public User(String name, String email, int age) {
+        this.name = name;
         this.email = email;
         this.age = age;
     }
 
+    public User(String name, String email, boolean state, int age) {
+        this.name = name;
+        this.email = email;
+        this.state = state;
+        this.age = age;
+    }
+
+    public User() {
+    }
+
+    public boolean isGrabarAudio() {
+        return grabarAudio;
+    }
+
+    public void setGrabarAudio(boolean grabarAudio) {
+        this.grabarAudio = grabarAudio;
+    }
+
+    public void setUserName(String name) {
+        this.name = name;
+    }
+
+    public String getUserName() {
+        return this.name;
+    }
+
     @Override
     public String getName() {
-        return user_name;
+        return null;
     }
+
+
+
 
     @Override
     public String getPicture() {
@@ -81,7 +113,7 @@ public class User extends PictureName implements Serializable {
         this.emergency_contact = emergencyContact;
     }
 
-    static public ArrayList<User> getContacts(){
+   /* static public ArrayList<User> getContacts(){
         ArrayList<User> contacts = new ArrayList<>();
         contacts.add(new User("Sebastian","user@email.com", R.drawable.photo_placeholder));
         contacts.add(new User("Daniel","user@email.com", R.drawable.photo_placeholder));
@@ -101,6 +133,6 @@ public class User extends PictureName implements Serializable {
         contacts.add(new User("Karen","user@email.com", R.drawable.photo_placeholder));
 
         return contacts;
-    }
+    }*/
 }
 

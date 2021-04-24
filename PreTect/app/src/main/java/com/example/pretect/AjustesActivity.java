@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pretect.Utils.Functions;
+import com.example.pretect.Utils.Permisos;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -46,6 +48,10 @@ public class AjustesActivity extends AppCompatActivity {
 
     //Logout
     FirebaseAuth mAuth;
+
+    //Permisos
+    String permAudio = Manifest.permission.RECORD_AUDIO;
+    private static final int AUDIO_PERMISSION_ID = 5;
 
     //Db
     private FirebaseDatabase database;
@@ -93,6 +99,26 @@ public class AjustesActivity extends AppCompatActivity {
         save = findViewById(R.id.save);
 
 
+        estadoGrabacion();
+
+        recordSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            boolean permisoActivado = recordSwitch.isChecked();
+
+            if(!permisoActivado){
+
+            }else{
+                //pido el permiso
+                Permisos.requestPermission(
+                        this,
+                        permAudio,
+                        "Se recomienda grabar el audio en situaciones de peligro",
+                        AUDIO_PERMISSION_ID
+                );
+                estadoGrabacion();
+            }
+
+        });
+
         //Read user data
         //userEmail = mAuth.getCurrentUser().getEmail();
         //readOnce(userEmail);
@@ -134,6 +160,22 @@ public class AjustesActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void estadoGrabacion(){
+        if (ContextCompat.checkSelfPermission(this, permAudio) == PackageManager.PERMISSION_GRANTED) {
+            recordSwitch.setChecked(true);
+        }else{
+            recordSwitch.setChecked(false);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userEmail = mAuth.getCurrentUser().getEmail();
+        readOnce(userEmail);
     }
 
     private void readOnce(String userEmail) {
@@ -322,10 +364,4 @@ public class AjustesActivity extends AppCompatActivity {
         Picasso.get().load(uri).into(photo);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        userEmail = mAuth.getCurrentUser().getEmail();
-        readOnce(userEmail);
-    }
 }
