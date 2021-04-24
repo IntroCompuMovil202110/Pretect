@@ -1,13 +1,17 @@
 package com.example.pretect;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +21,20 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.pretect.Utils.AdapterClass;
 import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.UsersAdapter;
 import com.example.pretect.entities.User;
+import com.firebase.ui.database.CachingSnapshotParser;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.ObservableSnapshotArray;
+import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,20 +48,21 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.internal.cache.DiskLruCache;
+
 public class AgregarActivity extends AppCompatActivity {
     SearchView userSearch;
     static RecyclerView contactsList;
     BottomNavigationView menuInferior;
-    String[] projection;
-    Cursor cursor;
-    UsersAdapter contactsAdapter;
+    AdapterClass adapterClass;
+    ArrayList<FindFriends> list;
+    private String userKey;
 
     //Db
     FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference mDatabase;
     private static final String PATH_USERS = "users/";
-    static FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder> firebaseRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,99 +75,111 @@ public class AgregarActivity extends AppCompatActivity {
 
         //Inflate
         userSearch=findViewById(R.id.userSearch);
-        //ArrayList<User> contacts = (ArrayList<User>) getIntent().getSerializableExtra("contacts");
 
         contactsList = (RecyclerView) findViewById(R.id.contactsList);
         contactsList.setHasFixedSize(true);
         contactsList.setLayoutManager(new LinearLayoutManager(this));
 
-        //conversationList.setAdapter(new PictureNameAdapter(this, contacts));
 
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
             return Functions.navegacion(this, item);
         });
 
+    }
 
-        searchFriends("");
+    public void readOnce(){
+        if(mDatabase != null){
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        list = new ArrayList<>();
+                        for(DataSnapshot keyId: snapshot.getChildren()){
+                            if(!keyId.child("email")
+                                    .getValue(String.class)
+                                    .equals(mAuth.getCurrentUser().getEmail())
+                            ){
+                                list.add(keyId.getValue(FindFriends.class));
+                            }else{
+                                userKey = keyId.getKey();
+                            }
+                        }
+                        adapterClass = new AdapterClass(list);
+                        contactsList.setAdapter(adapterClass);
 
-        //Search
-        userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        toAddUser(adapterClass);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+
+        if(userSearch != null){
+            userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    search(newText);
+                    return true;
+                }
+            });
+        }
+    }
+
+    /*private boolean isFriend(String email) {
+        Task<DataSnapshot> tk= mDatabase.child(userKey).child("contacts").equalTo(email).get();
+        return tk.getResult().exists();
+        //return mDatabase.child(userKey).child("contacts").toString().equals(email);
+    }*/
+
+    private void toAddUser(AdapterClass adapterClass) {
+        adapterClass.setmListener(new AdapterClass.OnItemClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchFriends(query);
-                return false;
+            public void onItemClick(int position) {
+                Log.i("ADD", "User touched");
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onAddUser(int position) {
+                pubAddRequest(position);
             }
         });
-
     }
 
-    private void searchFriends(String query) {
-
-        Query callOn= mDatabase.orderByChild("name").startAt(query).endAt(query+"\uf8ff");
-        FirebaseRecyclerOptions<FindFriends> options =
-                new FirebaseRecyclerOptions.Builder<FindFriends>().setQuery(callOn, FindFriends.class).build();
-
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull FindFriendsViewHolder holder, int position, @NonNull FindFriends model) {
-
-                if(!model.getEmail().contains(mAuth.getCurrentUser().getEmail())){
-                    holder.setName(model.getName());
-                    holder.setPicture(model.getPicture());
-                    Log.i("FOUND", model.getName());
-                }
-                else{
-                    //holder.delete(position);
-                }
-            }
-
-            @NonNull
-            @Override
-            public FindFriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.agregar_usuario, parent, false);
-                return new FindFriendsViewHolder(view);
-            }
-        };
+    private void pubAddRequest(int position) {
+        String emailToAdd = list.get(position).getEmail();
+        mDatabase.child(userKey).child("contacts").setValue(emailToAdd);
+        Log.i("ADDUSER", "Before delete: " + list.get(position).getName());
+        list.remove(position);
+        Log.i("ADDUSER", "After delete: " + list.get(position).getName());
+        adapterClass.notifyItemRemoved(position);
     }
 
-    public static class FindFriendsViewHolder extends RecyclerView.ViewHolder{
-        View mView;
-
-        public FindFriendsViewHolder(@NonNull android.view.View itemView) {
-            super(itemView);
-            mView = itemView;
+    public void search(String query){
+        ArrayList<FindFriends> mList = new ArrayList<>();
+        for(FindFriends ob: list){
+           if(ob.getName().toLowerCase().contains(query.toLowerCase())){
+                mList.add(ob);
+           }
         }
-
-        public void setPicture(String picture){
-            if(picture!=null){
-                ImageView userPicture = mView.findViewById(R.id.userImage);
-                Picasso.get().load(picture).placeholder(R.drawable.photo_placeholder).into(userPicture);
-            }
-        }
-
-        public void setName(String userName){
-            if(userName != null){
-                TextView nameUser = mView.findViewById(R.id.userName);
-                nameUser.setText(userName);
-            }
-        }
-
-        //public void delete(int position){
-            //contactsList.removeViews(position,1);
-            //firebaseRecyclerAdapter.getRef(position).removeValue();
-        //}
+        AdapterClass adapterClass = new AdapterClass(mList);
+        contactsList.setAdapter(adapterClass);
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        firebaseRecyclerAdapter.startListening();
-        contactsList.setAdapter(firebaseRecyclerAdapter);
+        readOnce();
     }
 }

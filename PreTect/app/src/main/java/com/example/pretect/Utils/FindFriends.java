@@ -7,10 +7,11 @@ public class FindFriends {
     public FindFriends() {
     }
 
-    /*public FindFriends(String picture, String name) {
+    public FindFriends(String picture, String name, String email) {
         this.picture = picture;
         this.name = name;
-    }*/
+        this.email = email;
+    }
 
     public String getPicture() {
         return picture;
