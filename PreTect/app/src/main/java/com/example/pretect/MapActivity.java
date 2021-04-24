@@ -3,11 +3,9 @@ package com.example.pretect;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -21,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.pretect.Utils.Functions;
+import com.example.pretect.entities.LocationPermissionsRequestor;
 import com.example.pretect.entities.PlatformPositioningProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.here.sdk.core.Anchor2D;
@@ -43,6 +42,7 @@ public class MapActivity extends AppCompatActivity {
     private String locationPerm = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final int LOCATION_PERMISSION_ID=1;
     private boolean locationEnable=false;
+    private LocationPermissionsRequestor permissionsRequestor;
 
     //light sensor
     private SensorManager sensorManager;
@@ -90,9 +90,10 @@ public class MapActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
 
         //Permissions
-        requestPermission(this, locationPerm,"Se necesita el permiso para acceder a la ubicacion",LOCATION_PERMISSION_ID);
+        handleAndroidPermissions();
 
         //Map
+        initMyLocation();
         loadMapScene();
     }
 
@@ -113,6 +114,8 @@ public class MapActivity extends AppCompatActivity {
         sensorManager.registerListener(lightSensorListener, lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
         if(locationEnable){
             starLocating();
+        }else{
+            initMyLocation();
         }
     }
 
@@ -124,27 +127,26 @@ public class MapActivity extends AppCompatActivity {
     }
 
     //Permissions
-    private void requestPermission(Activity context, String permission, String justification, int id){
-        if(ContextCompat.checkSelfPermission(context, permission)!= PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(context, permission)){
-                Toast.makeText(context, justification, Toast.LENGTH_SHORT).show();
+    private void handleAndroidPermissions() {
+        permissionsRequestor = new LocationPermissionsRequestor(this);
+        permissionsRequestor.request(new LocationPermissionsRequestor.ResultListener(){
+
+            @Override
+            public void permissionsGranted() {
+                initMyLocation();
             }
-            ActivityCompat.requestPermissions(context, new String[]{permission}, id);
-        }else{
-            initMyLocation();
-        }
+
+            @Override
+            public void permissionsDenied() {
+                loadMapScene();
+                Log.e("PermissionRequestor", "Permissions denied by user.");
+            }
+        });
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_ID) {
-            if(ContextCompat.checkSelfPermission(this, locationPerm)== PackageManager.PERMISSION_GRANTED) {
-                loadMapScene();
-                initMyLocation();
-
-            }
-        }
+        permissionsRequestor.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     //Initialize Map
@@ -152,13 +154,16 @@ public class MapActivity extends AppCompatActivity {
         mapView.getMapScene().loadScene(MapScheme.NORMAL_DAY, mapError -> {
             if(mapError == null){
                 if(!locationEnable){
-                    mapView.getCamera().lookAt(new GeoCoordinates(0,0,10000));
+                    mapView.getCamera().lookAt(new GeoCoordinates(0,0),10000);
                 }
             }else{
                 //TODO: log error
             }
         });
     }
+
+    //Routs
+
 
     //My Location Updates
     private void initMyLocation() {
@@ -190,7 +195,7 @@ public class MapActivity extends AppCompatActivity {
                     myMarker.setCoordinates(new GeoCoordinates(location.getLatitude(),location.getLongitude()));
                 }
                 mapView.getMapScene().addMapMarker(myMarker);
-                mapView.getCamera().lookAt(new GeoCoordinates(location.getLatitude(),location.getLongitude(),10000));
+                mapView.getCamera().lookAt(new GeoCoordinates(location.getLatitude(),location.getLongitude()),10000);
             }
         });
     }
