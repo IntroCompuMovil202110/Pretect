@@ -46,6 +46,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.internal.cache.DiskLruCache;
@@ -62,7 +63,10 @@ public class AgregarActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseContacts;
     private static final String PATH_USERS = "users/";
+    private static final String PATH_CONTACTS = "contacts/";
+    private String authEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class AgregarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agregar);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child(PATH_USERS);
+        mDatabaseContacts = FirebaseDatabase.getInstance().getReference().child(PATH_CONTACTS);
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -158,7 +163,34 @@ public class AgregarActivity extends AppCompatActivity {
 
     private void pubAddRequest(int position) {
         String emailToAdd = list.get(position).getEmail();
-        mDatabase.child(userKey).child("contacts").setValue(emailToAdd);
+        String[] emailSplit = emailToAdd.split("[.#$]+");
+        String emailContact = "";
+        for(String obj: emailSplit){
+            emailContact = emailContact + obj;
+        }
+        emailSplit = authEmail.split("[.#$]+");
+        String emailAuthUser = "";
+        for(String obj: emailSplit){
+            emailAuthUser = emailAuthUser + obj;
+        }
+        Log.i("ADDUSER", "Contact email splited: " + emailContact);
+        mDatabaseContacts.child(userKey).child(emailContact).setValue(emailToAdd);
+        String finalEmailAuthUser = emailAuthUser;
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot keyId: snapshot.getChildren()){
+                    if(keyId.child("email").getValue(String.class).equals(emailToAdd)){
+                        mDatabaseContacts.child(keyId.getKey()).child(finalEmailAuthUser).setValue(authEmail);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         Log.i("ADDUSER", "Before delete: " + list.get(position).getName());
         list.remove(position);
         Log.i("ADDUSER", "After delete: " + list.get(position).getName());
@@ -180,6 +212,7 @@ public class AgregarActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        authEmail = mAuth.getCurrentUser().getEmail();
         readOnce();
     }
 }
