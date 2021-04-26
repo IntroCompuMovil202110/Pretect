@@ -306,8 +306,10 @@ public class MapActivity extends AppCompatActivity {
         }
 
         float widthInPixels = 20;
+        if(routeMapPolyline!=null){
+            mapView.getMapScene().removeMapPolyline(routeMapPolyline);
+        }
         routeMapPolyline = new MapPolyline(routeGeoPolyline,widthInPixels,Color.valueOf(0, 0.56f, 0.54f, 0.63f)); // RGBA
-
         mapView.getMapScene().addMapPolyline(routeMapPolyline);
     }
 
