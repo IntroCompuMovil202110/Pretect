@@ -229,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
                        // LatLng posicionUsuario = new LatLng(location.getLatitude(), location.getLongitude());
                         //usuarioMarker = mMap.addMarker(new MarkerOptions().position(posicionUsuario).title("Posicion usuario"));
                         //mMap.moveCamera(CameraUpdateFactory.newLatLng(posicionUsuario));
+                        Log.i(TAG, "Longitud " + location.getLongitude());
+                        Log.i(TAG, "Latitud " + location.getLatitude());
                     }
                    // checkSettingsLocation();
                     //startLocationUpdates();
