@@ -17,9 +17,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.pretect.Utils.Functions;
+import com.example.pretect.Utils.Permisos;
 import com.example.pretect.entities.LocationPermissionsRequestor;
 import com.example.pretect.entities.PlatformPositioningProvider;
 import com.example.pretect.entities.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -95,7 +97,6 @@ public class MapActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference reference;
-
 
     //Life Cycle
     @Override

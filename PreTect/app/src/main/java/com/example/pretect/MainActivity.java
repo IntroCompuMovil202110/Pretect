@@ -9,6 +9,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -29,6 +30,8 @@ import com.example.pretect.Utils.Permisos;
 import com.example.pretect.entities.Notification;
 import com.example.pretect.entities.User;
 import com.example.pretect.services.FirebaseStateListenerService;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -88,6 +91,13 @@ public class MainActivity extends AppCompatActivity {
     //firebase authentication
     private FirebaseAuth mAuth;
 
+    //Ubicación
+    //Permisos
+    private static final int LOCATION_PERMISSION_ID = 15;
+    private static final String LOCATION_NAME = Manifest.permission.ACCESS_FINE_LOCATION;
+    //atributos
+    private FusedLocationProviderClient locationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
             return Functions.navegacion(this, item);
         });
 
+        //ubicacion
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
         //Permisos
         Permisos.requestPermission(
                 this,
@@ -121,6 +135,14 @@ public class MainActivity extends AppCompatActivity {
                 "Se recomienda grabar el audio en situaciones de peligro",
                 AUDIO_PERMISSION_ID
         );
+
+        Permisos.requestPermission(
+                this,
+                LOCATION_NAME,
+                "Es necesario activar tu ubicación en el GPS",
+                LOCATION_PERMISSION_ID
+        );
+        initUbicacion();
 
         //
         //base de datos
@@ -196,6 +218,23 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
+    }
+
+    private void initUbicacion() {
+        if (ContextCompat.checkSelfPermission(this, LOCATION_NAME) == PackageManager.PERMISSION_GRANTED) {
+            locationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location != null){
+                       // LatLng posicionUsuario = new LatLng(location.getLatitude(), location.getLongitude());
+                        //usuarioMarker = mMap.addMarker(new MarkerOptions().position(posicionUsuario).title("Posicion usuario"));
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(posicionUsuario));
+                    }
+                   // checkSettingsLocation();
+                    //startLocationUpdates();
+                }
+            });
+        }
     }
 
     private void createNotificationChannel(){
@@ -337,8 +376,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public static boolean isContact(String check){
