@@ -27,6 +27,7 @@ import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.UsersAdapter;
 import com.example.pretect.entities.User;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +48,7 @@ public class AgregarActivity extends AppCompatActivity {
     BottomNavigationView menuInferior;
     AdapterClass adapterClass;
     ArrayList<FindFriends> list;
-    ArrayList<String> userContacts;
+    ArrayList<String> userContacts = new ArrayList<>();
     private String userKey, userName;
 
     //Db
@@ -101,7 +102,7 @@ public class AgregarActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        list.removeAll(userContacts);
+
                         adapterClass = new AdapterClass(list);
                         contactsList.setAdapter(adapterClass);
 
@@ -134,26 +135,15 @@ public class AgregarActivity extends AppCompatActivity {
     }
 
     private void searchContacts(){
-        mDatabaseContacts.addValueEventListener(new ValueEventListener() {
+        mDatabaseContacts.orderByKey().equalTo(userKey).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    userContacts = new ArrayList<>();
-                    for(DataSnapshot keyId: snapshot.getChildren()){
-                        if(keyId.getKey().equals(userKey)) {
-                            Log.i("CONTACT", "Encontre mi usuario");
-                            for(DataSnapshot keyContact: keyId.getChildren()){
-                                Log.i("CONTACT", keyContact.getKey());
-                                userContacts.add(keyContact.getKey());
-                            }
-                        }
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot keyId: dataSnapshot.getChildren()){
+                    for(DataSnapshot keyContact: keyId.getChildren()){
+                        userContacts.add(keyContact.getKey());
                     }
-                    readOnce();
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+                readOnce();
             }
         });
     }
@@ -215,29 +205,17 @@ public class AgregarActivity extends AppCompatActivity {
     }
 
     public void current(){
-        if(mDatabase != null){
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        for(DataSnapshot keyId: snapshot.getChildren()){
-                            if(keyId.child("email")
-                                    .getValue(String.class)
-                                    .equals(mAuth.getCurrentUser().getEmail())){
-                                userKey = keyId.getKey();
-                                userName = keyId.child("name").getValue(String.class);
-                                searchContacts();
-                            }
-                        }
+        mDatabase.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot keyId: dataSnapshot.getChildren()){
+                    if(keyId.child("email").getValue(String.class).equals(authEmail)){
+                        userKey = keyId.getKey();
                     }
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
+                searchContacts();
+            }
+        });
     }
 
     @Override

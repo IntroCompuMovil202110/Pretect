@@ -36,6 +36,8 @@
         <meta-data android:name="com.here.sdk.access_key_id" android:value="WfWWrUTTGUsDqU9NF1SeTg" />
         <meta-data android:name="com.here.sdk.access_key_secret" android:value="c5hlzKtfFUYlv1_Sm23kSKeVLG3BlcKsGn5KwWr_3OLYDEMgVXsvlrIzfx36Syfn9j4qvKbVz-qSGwC_WAdhUA" />
 
+        <service android:name=".services.FirebaseStateListenerService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

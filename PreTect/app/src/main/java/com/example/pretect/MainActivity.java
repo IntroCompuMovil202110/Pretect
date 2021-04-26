@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
+import com.example.pretect.entities.Notification;
 import com.example.pretect.entities.User;
+import com.example.pretect.services.FirebaseStateListenerService;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Usuario
     User user;
+    String userKey, userName, userMail;
+    ArrayList<FindFriends> list = new ArrayList<>();
+    static ArrayList<String> userContacts = new ArrayList<>();
 
     //UI
     Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje ;
@@ -71,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     //Atributos
     FirebaseDatabase database;
     DatabaseReference myRef;
+    DatabaseReference mContacts;
+    public static String CHANNEL_ID = "PRETECT";
 
     //firebase authentication
     private FirebaseAuth mAuth;
@@ -113,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         //base de datos
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        mContacts = FirebaseDatabase.getInstance().getReference("contacts");
 
         //obtiene el correo
         String userEmail = mAuth.getCurrentUser().getEmail();
@@ -128,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                         panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
                         estado=true;
                         grabarAudio();
+                        myRef.child(userKey).child("state").setValue(estado);
                     }
                 }else{
                     contador--;
@@ -147,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     estado=false;
                     //parar la grabación
                     onRecord(false);
+                    myRef.child(userKey).child("state").setValue(estado);
                     avisoClave.setVisibility(View.INVISIBLE);
                     avisoMensaje.setVisibility(View.VISIBLE);
                 }else{
@@ -178,6 +194,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        createNotificationChannel();
+
+    }
+
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "channel";
+            String description = "Channel Desc";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private void grabarAudio() {
@@ -257,5 +287,69 @@ public class MainActivity extends AppCompatActivity {
         recorder = null;
     }
 
+    private void startFirebaseStateListenerService() {
+        Intent intent = new Intent(MainActivity.this, FirebaseStateListenerService.class);
+        FirebaseStateListenerService.enqueueWork(MainActivity.this, intent);
+        Log.i("FBSERVICE", "Invoking FB Service...");
+    }
 
+    private void current(){
+        myRef.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot keyId: dataSnapshot.getChildren()){
+                    if(keyId.child("email").getValue(String.class).equals(userMail)){
+                        userKey = keyId.getKey();
+                    }
+                }
+                searchContacts();
+            }
+        });
+    }
+
+    private void searchContacts(){
+        mContacts.orderByKey().equalTo(userKey).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot keyId: dataSnapshot.getChildren()){
+                    for(DataSnapshot keyContact: keyId.getChildren()){
+                        userContacts.add(keyContact.getKey());
+                    }
+                }
+                readUsers();
+            }
+        });
+    }
+
+    private void readUsers() {
+        myRef.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot keyId: dataSnapshot.getChildren()){
+                    int i = 0;
+                    if(!keyId.getKey().equals(userKey)){
+                        if(!isContact(keyId.getKey())){
+                            list.add(keyId.getValue(FindFriends.class));
+                            list.get(i).setKey(keyId.getKey());
+                            i++;
+                        }
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    public static boolean isContact(String check){
+        return userContacts.contains(check);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userMail = mAuth.getCurrentUser().getEmail();
+        current();
+        startFirebaseStateListenerService();
+    }
 }
