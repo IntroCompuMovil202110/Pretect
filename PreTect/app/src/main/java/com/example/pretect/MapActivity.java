@@ -164,7 +164,6 @@ public class MapActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-
     }
 
     //Permissions
@@ -382,7 +381,6 @@ public class MapActivity extends AppCompatActivity {
 
     private void addUserMarker(User user) {
         if(user.getLatitude()!= Double.MIN_VALUE && user.getLongitude()!=Double.MIN_VALUE){
-            Toast.makeText(MapActivity.this, "LatLong: "+ user.getLatitude()+" "+user.getLongitude(), Toast.LENGTH_SHORT).show();
             Anchor2D anchor2D=new Anchor2D(0.5f,1.0f);
             MapMarker othersMapMarker=new MapMarker(new GeoCoordinates(user.getLatitude(),user.getLongitude()),othersMapImage,anchor2D);
             mapView.getMapScene().addMapMarker(othersMapMarker);
