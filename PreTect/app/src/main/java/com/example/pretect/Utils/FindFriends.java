@@ -2,7 +2,7 @@ package com.example.pretect.Utils;
 
 public class FindFriends {
 
-    public String picture, name, email;
+    public String picture, name, email, key;
 
     public FindFriends() {
     }
@@ -28,4 +28,12 @@ public class FindFriends {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

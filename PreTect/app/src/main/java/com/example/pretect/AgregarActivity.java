@@ -26,11 +26,7 @@ import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.UsersAdapter;
 import com.example.pretect.entities.User;
-import com.firebase.ui.database.CachingSnapshotParser;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.ObservableSnapshotArray;
-import com.firebase.ui.database.SnapshotParser;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,13 +39,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import okhttp3.internal.cache.DiskLruCache;
 
 public class AgregarActivity extends AppCompatActivity {
     SearchView userSearch;
@@ -57,7 +47,8 @@ public class AgregarActivity extends AppCompatActivity {
     BottomNavigationView menuInferior;
     AdapterClass adapterClass;
     ArrayList<FindFriends> list;
-    private String userKey;
+    ArrayList<String> userContacts;
+    private String userKey, userName;
 
     //Db
     FirebaseAuth mAuth;
@@ -100,16 +91,17 @@ public class AgregarActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
                         list = new ArrayList<>();
+                        int position = 0;
                         for(DataSnapshot keyId: snapshot.getChildren()){
-                            if(!keyId.child("email")
-                                    .getValue(String.class)
-                                    .equals(mAuth.getCurrentUser().getEmail())
-                            ){
-                                list.add(keyId.getValue(FindFriends.class));
-                            }else{
-                                userKey = keyId.getKey();
+                            if(!keyId.getKey().equals(userKey)){
+                                if(!isContact(keyId.getKey())){
+                                    list.add(keyId.getValue(FindFriends.class));
+                                    list.get(position).setKey(keyId.getKey());
+                                    position++;
+                                }
                             }
                         }
+                        list.removeAll(userContacts);
                         adapterClass = new AdapterClass(list);
                         contactsList.setAdapter(adapterClass);
 
@@ -141,11 +133,34 @@ public class AgregarActivity extends AppCompatActivity {
         }
     }
 
-    /*private boolean isFriend(String email) {
-        Task<DataSnapshot> tk= mDatabase.child(userKey).child("contacts").equalTo(email).get();
-        return tk.getResult().exists();
-        //return mDatabase.child(userKey).child("contacts").toString().equals(email);
-    }*/
+    private void searchContacts(){
+        mDatabaseContacts.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    userContacts = new ArrayList<>();
+                    for(DataSnapshot keyId: snapshot.getChildren()){
+                        if(keyId.getKey().equals(userKey)) {
+                            Log.i("CONTACT", "Encontre mi usuario");
+                            for(DataSnapshot keyContact: keyId.getChildren()){
+                                Log.i("CONTACT", keyContact.getKey());
+                                userContacts.add(keyContact.getKey());
+                            }
+                        }
+                    }
+                    readOnce();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private boolean isContact(String check) {
+        return userContacts.contains(check);
+    }
 
     private void toAddUser(AdapterClass adapterClass) {
         adapterClass.setmListener(new AdapterClass.OnItemClickListener() {
@@ -162,26 +177,17 @@ public class AgregarActivity extends AppCompatActivity {
     }
 
     private void pubAddRequest(int position) {
-        String emailToAdd = list.get(position).getEmail();
-        String[] emailSplit = emailToAdd.split("[.#$]+");
-        String emailContact = "";
-        for(String obj: emailSplit){
-            emailContact = emailContact + obj;
-        }
-        emailSplit = authEmail.split("[.#$]+");
-        String emailAuthUser = "";
-        for(String obj: emailSplit){
-            emailAuthUser = emailAuthUser + obj;
-        }
-        Log.i("ADDUSER", "Contact email splited: " + emailContact);
-        mDatabaseContacts.child(userKey).child(emailContact).setValue(emailToAdd);
-        String finalEmailAuthUser = emailAuthUser;
+        String nameToAdd = list.get(position).getName();
+        String keyToAdd = list.get(position).getKey();
+        Log.i("ADDUSER", "Contact name to add: " + nameToAdd);
+        mDatabaseContacts.child(userKey).child(keyToAdd).setValue(nameToAdd);
+
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot keyId: snapshot.getChildren()){
-                    if(keyId.child("email").getValue(String.class).equals(emailToAdd)){
-                        mDatabaseContacts.child(keyId.getKey()).child(finalEmailAuthUser).setValue(authEmail);
+                    if(keyId.getKey().equals(keyToAdd)){
+                        mDatabaseContacts.child(keyToAdd).child(userKey).setValue(userName);
                     }
                 }
             }
@@ -208,11 +214,36 @@ public class AgregarActivity extends AppCompatActivity {
         contactsList.setAdapter(adapterClass);
     }
 
+    public void current(){
+        if(mDatabase != null){
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        for(DataSnapshot keyId: snapshot.getChildren()){
+                            if(keyId.child("email")
+                                    .getValue(String.class)
+                                    .equals(mAuth.getCurrentUser().getEmail())){
+                                userKey = keyId.getKey();
+                                userName = keyId.child("name").getValue(String.class);
+                                searchContacts();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
         authEmail = mAuth.getCurrentUser().getEmail();
-        readOnce();
+        current();
     }
 }
