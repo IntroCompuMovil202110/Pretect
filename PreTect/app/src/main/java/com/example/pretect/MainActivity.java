@@ -2,13 +2,16 @@ package com.example.pretect;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -27,9 +30,24 @@ import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
 import com.example.pretect.entities.Notification;
+import com.example.pretect.entities.SingletoneUser;
 import com.example.pretect.entities.User;
 import com.example.pretect.services.FirebaseStateListenerService;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,6 +106,19 @@ public class MainActivity extends AppCompatActivity {
     //firebase authentication
     private FirebaseAuth mAuth;
 
+    //Ubicación
+    //Permisos
+    private static final int LOCATION_PERMISSION_ID = 15;
+    private static final String LOCATION_NAME = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final int SETTINGS_GPS = 10;
+    //atributos
+    private FusedLocationProviderClient locationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+
+    //singleton user
+    SingletoneUser singletoneUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,13 +145,39 @@ public class MainActivity extends AppCompatActivity {
             return Functions.navegacion(this, item);
         });
 
-        //Permisos
+        //ubicacion
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationRequest = createLocationRequest();
+
+        //singleton
+        singletoneUser = SingletoneUser.getInstance();
+
+        try{
+            estado = singletoneUser.getData().getState();
+            if(estado == true){
+                panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
+                estado = true;
+                contador = 3;
+            }else{
+                panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.verde_principal));
+                estado = false;
+                contador=0;
+            }
+        }catch (Exception e){
+
+        }
+
+
+
         Permisos.requestPermission(
                 this,
-                permAudio,
-                "Se recomienda grabar el audio en situaciones de peligro",
-                AUDIO_PERMISSION_ID
+                LOCATION_NAME,
+                "Es necesario activar tu ubicación en el GPS",
+                LOCATION_PERMISSION_ID
         );
+
+        //initUbicacion();
+
 
         //
         //base de datos
@@ -132,6 +189,31 @@ public class MainActivity extends AppCompatActivity {
         String userEmail = mAuth.getCurrentUser().getEmail();
         cargarDatos(userEmail);
 
+        //esto se llama cada vez que hay una actualizacion del GPS
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location location = locationResult.getLastLocation();
+                if(location != null){
+                    Log.i(TAG, "Longitud " + location.getLongitude());
+                    Log.i(TAG, "Latitud " + location.getLatitude());
+                    try{
+                        //Actualizo la informacion del usuario en la bd
+                        user.setLatitude(location.getLatitude());
+                        user.setLongitude(location.getLongitude());
+                        myRef.child(userKey).child("latitude").setValue(location.getLatitude());
+                        myRef.child(userKey).child("longitude").setValue(location.getLongitude());
+                        //actualizo el singleton
+                        singletoneUser.setData(user);
+                    }catch (Exception e){
+
+                    }
+
+                }
+            }
+        };
+
         panico.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -139,10 +221,21 @@ public class MainActivity extends AppCompatActivity {
                 if(estado == false){
                     contador++;
                     if(contador==3){
+
+                        //Permisos
+                        Permisos.requestPermission(
+                                MainActivity.this,
+                                permAudio,
+                                "Se recomienda grabar el audio en situaciones de peligro",
+                                AUDIO_PERMISSION_ID
+                        );
+
                         panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
                         estado=true;
                         grabarAudio();
                         myRef.child(userKey).child("state").setValue(estado);
+                        user.setState(true);
+                        singletoneUser.setData(user);
                     }
                 }else{
                     contador--;
@@ -165,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
                     myRef.child(userKey).child("state").setValue(estado);
                     avisoClave.setVisibility(View.INVISIBLE);
                     avisoMensaje.setVisibility(View.VISIBLE);
+                    user.setState(false);
+                    singletoneUser.setData(user);
                 }else{
                     Toast.makeText(getApplicationContext(), "Clave incorrecta", Toast.LENGTH_SHORT).show();
                 }
@@ -196,6 +291,36 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
+    }
+
+    //creamos el objeto que establece cada cuanto y como pido la localizacion
+    private LocationRequest createLocationRequest(){
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return  locationRequest;
+    }
+
+    //activar la actualizacion automatica de la ubicacion
+    private void startLocationUpdates(){
+        if(ContextCompat.checkSelfPermission(this, LOCATION_NAME)== PackageManager.PERMISSION_GRANTED){
+            locationClient.requestLocationUpdates(locationRequest,
+                    locationCallback, null);
+        }
+    }
+
+    //pausar la actualizacion automatica de la ubicacion
+    private void stopLocationUpdates(){
+        locationClient.removeLocationUpdates(locationCallback);
+    }
+
+    private void initUbicacion() {
+        Log.i(TAG,"ANTES -1");
+        if (ContextCompat.checkSelfPermission(this, LOCATION_NAME) == PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG,"ANTES 0");
+            checkSettingsLocation();
+        }
     }
 
     private void createNotificationChannel(){
@@ -237,9 +362,10 @@ public class MainActivity extends AppCompatActivity {
                     if (elemento.child("email").getValue().equals(userEmail)) {
                         //guardo el usuario
                         user = elemento.getValue(User.class);
-                        saludo.setText(user.getUserName());
+                        saludo.setText("Hola " + user.getUserName()+"!");
                         claveFalsa = user.getBait_phrase();
                         claveVerdadera = user.getSafety_phrase();
+                        singletoneUser.setData(user);
                     }
                 }
             }
@@ -256,6 +382,54 @@ public class MainActivity extends AppCompatActivity {
             user.setGrabarAudio(false);
         }*/
     }
+    private void checkSettingsLocation(){
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Log.i(TAG,"ANTES");
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        Log.i(TAG,"DESPUES");
+        //si el GPS existe y ya esta prendido
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                startLocationUpdates(); //Todas las condiciones para recibir localizaciones
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i(TAG,"APAGADO");
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode) {
+                    case CommonStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult (MainActivity.this,SETTINGS_GPS);
+                        } catch (IntentSender.SendIntentException sendEx) {
+// Ignore the error.
+                        } break;
+                    //en caso de que el celular no tenga GPS
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SETTINGS_GPS) {
+            Log.i(TAG, "Entre");
+            startLocationUpdates();
+        } else {
+            Toast.makeText(this,
+                    "Sin acceso a localización, hardware deshabilitado!",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
 
     private void onRecord(boolean start) {
         if (start) {
@@ -267,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startRecording() {
         recorder = new MediaRecorder();
+        singletoneUser.setRecorder(recorder);
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setOutputFile(fileName);
@@ -282,6 +457,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopRecording() {
+        if(recorder==null){
+            recorder = singletoneUser.getRecorder();
+        }
         recorder.stop();
         recorder.release();
         recorder = null;
@@ -337,12 +515,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public static boolean isContact(String check){
         return userContacts.contains(check);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == LOCATION_PERMISSION_ID){
+            initUbicacion();
+        }
     }
 
     @Override
