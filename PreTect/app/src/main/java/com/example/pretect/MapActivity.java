@@ -20,6 +20,7 @@ import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
 import com.example.pretect.entities.LocationPermissionsRequestor;
 import com.example.pretect.entities.PlatformPositioningProvider;
+import com.example.pretect.entities.SingletoneUser;
 import com.example.pretect.entities.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -98,6 +99,9 @@ public class MapActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference reference;
 
+    //singleton user
+    SingletoneUser singletoneUser;
+
     //Life Cycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +133,9 @@ public class MapActivity extends AppCompatActivity {
         // Get a MapViewLite instance from the layout.
         mapView = findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
+
+        //singleton
+        singletoneUser = SingletoneUser.getInstance();
 
         readOnce();
 

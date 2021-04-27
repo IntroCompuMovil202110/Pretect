@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
+import com.example.pretect.entities.SingletoneUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -73,6 +74,9 @@ public class AjustesActivity extends AppCompatActivity {
     private String nameDB, phoneDB = "", emergencyContactDB = "", baitWordDB = "", safeWordDB = "", photoDB, userKey;
     private Uri uriPicture;
 
+    //singleton user
+    SingletoneUser singletoneUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +102,8 @@ public class AjustesActivity extends AppCompatActivity {
         photo = findViewById(R.id.photo);
         save = findViewById(R.id.save);
 
+        //singleton
+        singletoneUser = SingletoneUser.getInstance();
 
         estadoGrabacion();
 

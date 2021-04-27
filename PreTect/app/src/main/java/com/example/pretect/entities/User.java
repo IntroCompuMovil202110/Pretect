@@ -98,7 +98,7 @@ public class User extends PictureName implements Serializable {
         return emergency_contact;
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 
@@ -132,6 +132,10 @@ public class User extends PictureName implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 }
 

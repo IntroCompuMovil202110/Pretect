@@ -2,6 +2,7 @@ package com.example.pretect.Utils;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
