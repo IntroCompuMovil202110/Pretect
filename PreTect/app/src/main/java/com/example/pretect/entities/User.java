@@ -24,6 +24,26 @@ public class User extends PictureName implements Serializable {
     private double latitude;
     private double longitude;
     private boolean grabarAudio;
+    private String id;
+
+    public String getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(String solicitud) {
+        this.solicitud = solicitud;
+    }
+
+    private String solicitud;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public User(String name, String email, int age) {
         this.name = name;
@@ -43,6 +63,10 @@ public class User extends PictureName implements Serializable {
     }
 
     public User() {
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isGrabarAudio() {
@@ -66,8 +90,9 @@ public class User extends PictureName implements Serializable {
         return null;
     }
 
-
-
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     @Override
     public String getPicture() {

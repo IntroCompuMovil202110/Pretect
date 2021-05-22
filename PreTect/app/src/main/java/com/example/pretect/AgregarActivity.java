@@ -20,17 +20,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pretect.Utils.AdapterClass;
 import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.UsersAdapter;
+import com.example.pretect.adapters.AgregarAdapter;
 import com.example.pretect.entities.User;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,185 +46,126 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class AgregarActivity extends AppCompatActivity {
-    SearchView userSearch;
-    static RecyclerView contactsList;
-    BottomNavigationView menuInferior;
-    AdapterClass adapterClass;
-    ArrayList<FindFriends> list;
-    ArrayList<String> userContacts = new ArrayList<>();
-    private String userKey, userName;
 
-    //Db
+    //TAG
+    private static final String TAG = "ListActivity";
+
+    //Usuarios encontrados
+    ArrayList<User> usuarios = new ArrayList<>();
+
+    //Adapter
+    AgregarAdapter agregarAdapter;
+
+    //Views
+    SearchView userSearch;
+    BottomNavigationView menuInferior;
+    ListView mlista;
+
+    FirebaseUser usuario;
+
+    //Databse
+    //Paths
+    private static final String PATH_USERS = "users/";
+    //firebase realtime database
     FirebaseAuth mAuth;
     private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseContacts;
-    private static final String PATH_USERS = "users/";
-    private static final String PATH_CONTACTS = "contacts/";
-    private String authEmail;
+    private DatabaseReference myRef;
+    private DatabaseReference refContacts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(PATH_USERS);
-        mDatabaseContacts = FirebaseDatabase.getInstance().getReference().child(PATH_CONTACTS);
+        //firebase
         mAuth = FirebaseAuth.getInstance();
+        //realtime database
+        database= FirebaseDatabase.getInstance();
 
+        //auth firebase
+        usuario = mAuth.getCurrentUser();
+        //users/myUserID
+        Log.i(TAG,PATH_USERS+usuario.getUid());
+        refContacts = database.getReference(PATH_USERS+usuario.getUid()+"/contacts/");
 
-        //Inflate
+        loadContactos();
+
+        //inflate
+        mlista =  findViewById(R.id.contactsList);
         userSearch=findViewById(R.id.userSearch);
+        agregarAdapter = new AgregarAdapter(usuarios,this,usuario.getUid(),database);
+        mlista.setAdapter(agregarAdapter);
 
-        contactsList = (RecyclerView) findViewById(R.id.contactsList);
-        contactsList.setHasFixedSize(true);
-        contactsList.setLayoutManager(new LinearLayoutManager(this));
-
-
+        //Menu Inferior
         menuInferior = findViewById(R.id.bottom_nav_instructor);
         menuInferior.setOnNavigationItemSelectedListener(item -> {
             return Functions.navegacion(this, item);
         });
 
-    }
-
-    public void readOnce(){
-        if(mDatabase != null){
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        list = new ArrayList<>();
-                        int position = 0;
-                        for(DataSnapshot keyId: snapshot.getChildren()){
-                            if(!keyId.getKey().equals(userKey)){
-                                if(!isContact(keyId.getKey())){
-                                    list.add(keyId.getValue(FindFriends.class));
-                                    list.get(position).setKey(keyId.getKey());
-                                    position++;
-                                }
-                            }
-                        }
-
-                        adapterClass = new AdapterClass(list);
-                        contactsList.setAdapter(adapterClass);
-
-                        toAddUser(adapterClass);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-
-
-        if(userSearch != null){
-            userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    search(newText);
-                    return true;
-                }
-            });
-        }
-    }
-
-    private void searchContacts(){
-        mDatabaseContacts.orderByKey().equalTo(userKey).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        //on search listener for search bar
+        userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot keyId: dataSnapshot.getChildren()){
-                    for(DataSnapshot keyContact: keyId.getChildren()){
-                        userContacts.add(keyContact.getKey());
-                    }
-                }
-                readOnce();
+            public boolean onQueryTextSubmit(String query) {
+                loadUsers(query);
+                Toast.makeText(getBaseContext(), query,Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
     }
 
-    private boolean isContact(String check) {
-        return userContacts.contains(check);
-    }
-
-    private void toAddUser(AdapterClass adapterClass) {
-        adapterClass.setmListener(new AdapterClass.OnItemClickListener() {
+    //funcion para buscar los usuarios
+    public void loadUsers(String searchValue) {
+        myRef = database.getReference(PATH_USERS);
+        Query query = myRef.orderByChild("userName").startAt(searchValue).endAt(searchValue+"\uf8ff");
+        query. addValueEventListener(new ValueEventListener() {
             @Override
-            public void onItemClick(int position) {
-                Log.i("ADD", "User touched");
-            }
-
-            @Override
-            public void onAddUser(int position) {
-                pubAddRequest(position);
-            }
-        });
-    }
-
-    private void pubAddRequest(int position) {
-        String nameToAdd = list.get(position).getName();
-        String keyToAdd = list.get(position).getKey();
-        Log.i("ADDUSER", "Contact name to add: " + nameToAdd);
-        mDatabaseContacts.child(userKey).child(keyToAdd).setValue(nameToAdd);
-
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot keyId: snapshot.getChildren()){
-                    if(keyId.getKey().equals(keyToAdd)){
-                        mDatabaseContacts.child(keyToAdd).child(userKey).setValue(userName);
-                    }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usuarios = new ArrayList<>();
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    User myUser = singleSnapshot.getValue(User.class);
+                    myUser.setId(singleSnapshot.getKey());
+                    usuarios.add(myUser);
                 }
+                //actualizo el adaptador cuando llegan los datos
+                agregarAdapter = new AgregarAdapter(usuarios,getBaseContext(),usuario.getUid(),database);
+                mlista.setAdapter(agregarAdapter);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "error en la consulta", databaseError.toException());
             }
         });
-        Log.i("ADDUSER", "Before delete: " + list.get(position).getName());
-        list.remove(position);
-        Log.i("ADDUSER", "After delete: " + list.get(position).getName());
-        adapterClass.notifyItemRemoved(position);
     }
 
-    public void search(String query){
-        ArrayList<FindFriends> mList = new ArrayList<>();
-        for(FindFriends ob: list){
-           if(ob.getName().toLowerCase().contains(query.toLowerCase())){
-                mList.add(ob);
-           }
-        }
-        AdapterClass adapterClass = new AdapterClass(mList);
-        contactsList.setAdapter(adapterClass);
-    }
-
-    public void current(){
-        mDatabase.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+    //funcion para buscar los contactos/amigos del usuario actual
+    public void loadContactos() {
+        myRef = database.getReference(PATH_USERS+usuario.getUid()+"/contacts/");
+        myRef. addValueEventListener(new ValueEventListener() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot keyId: dataSnapshot.getChildren()){
-                    if(keyId.child("email").getValue(String.class).equals(authEmail)){
-                        userKey = keyId.getKey();
-                    }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usuarios = new ArrayList<>();
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    User myUser = singleSnapshot.getValue(User.class);
+                    myUser.setId(singleSnapshot.getKey());
+                    usuarios.add(myUser);
                 }
-                searchContacts();
+                //actualizo el adaptador cuando llegan los datos
+                agregarAdapter = new AgregarAdapter(usuarios,getBaseContext(),usuario.getUid(),database);
+                mlista.setAdapter(agregarAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "error en la consulta", databaseError.toException());
             }
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        authEmail = mAuth.getCurrentUser().getEmail();
-        current();
-    }
 }

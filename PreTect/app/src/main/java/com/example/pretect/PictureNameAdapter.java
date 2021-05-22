@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pretect.AbstractClass.PictureName;
-import com.example.pretect.entities.User;
 
 import java.util.ArrayList;
 
@@ -47,7 +46,7 @@ public class PictureNameAdapter extends BaseAdapter {
         View row = convertView;
         if(row == null){
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.agregar_usuario, null);
+            row = inflater.inflate(R.layout.agregar_usuario_item, null);
 
         }
         ImageView imageView = (ImageView) row.findViewById(R.id.userImage);

@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pretect.R;
-import com.google.firebase.database.core.Context;
-import com.google.firebase.database.core.view.View;
 
 public class UsersAdapter extends CursorAdapter {
 
@@ -20,7 +18,7 @@ public class UsersAdapter extends CursorAdapter {
 
     @Override
     public android.view.View newView(android.content.Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.agregar_usuario, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.agregar_usuario_item, parent, false);
     }
 
     @Override

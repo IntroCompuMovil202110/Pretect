@@ -65,14 +65,17 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    //TAG
+    private static final String TAG = "MainScreen";
+
     //Usuario
     User user;
     String userKey, userName, userMail;
     ArrayList<FindFriends> list = new ArrayList<>();
     static ArrayList<String> userContacts = new ArrayList<>();
 
-    //UI
-    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje ;
+    //Views
+    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje;
     RelativeLayout avisoClave, avisoMensaje;
     TextView clave, saludo;
     BottomNavigationView menuInferior;
@@ -94,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
     //
     //Base de datos
+    //Paths
     private static final String PATH_USERS = "users/";
-    private static final String TAG = "MainScreen";
 
     //Atributos
     FirebaseDatabase database;
@@ -116,14 +119,12 @@ public class MainActivity extends AppCompatActivity {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
-    //singleton user
-    SingletoneUser singletoneUser;
-
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         //Inflate
         panico = findViewById(R.id.botonPanico);
         aceptarClave = findViewById(R.id.aceptarClave);
@@ -149,34 +150,15 @@ public class MainActivity extends AppCompatActivity {
         locationClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = createLocationRequest();
 
-        //singleton
-        singletoneUser = SingletoneUser.getInstance();
-
-        try{
-            estado = singletoneUser.getData().getState();
-            if(estado == true){
-                panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
-                estado = true;
-                contador = 3;
-            }else{
-                panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.verde_principal));
-                estado = false;
-                contador=0;
-            }
-        }catch (Exception e){
-
-        }
-
-
-
+        //pedir permiso
         Permisos.requestPermission(
                 this,
                 LOCATION_NAME,
                 "Es necesario activar tu ubicación en el GPS",
                 LOCATION_PERMISSION_ID
         );
-
-        //initUbicacion();
+        //iniciar ubicacion
+        initUbicacion();
 
 
         //
@@ -186,41 +168,52 @@ public class MainActivity extends AppCompatActivity {
         mContacts = FirebaseDatabase.getInstance().getReference("contacts");
 
         //obtiene el correo
-        String userEmail = mAuth.getCurrentUser().getEmail();
-        cargarDatos(userEmail);
+        userID = mAuth.getCurrentUser().getUid();
 
         //esto se llama cada vez que hay una actualizacion del GPS
-        locationCallback = new LocationCallback(){
+        locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
-                if(location != null){
+                if (location != null) {
                     Log.i(TAG, "Longitud " + location.getLongitude());
                     Log.i(TAG, "Latitud " + location.getLatitude());
-                    try{
+                    try {
                         //Actualizo la informacion del usuario en la bd
                         user.setLatitude(location.getLatitude());
                         user.setLongitude(location.getLongitude());
+                        //Actualizo mi ubicacion
+                        myRef = database.getReference(PATH_USERS);
                         myRef.child(userKey).child("latitude").setValue(location.getLatitude());
                         myRef.child(userKey).child("longitude").setValue(location.getLongitude());
-                        //actualizo el singleton
-                        singletoneUser.setData(user);
-                    }catch (Exception e){
+                        //actualizar la ubicacion de todas las persona que me tienen agregado
+                        DatabaseReference myRef2 = database.getReference("users/" + userKey + "/contacts");
+                        myRef2.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot keyId : dataSnapshot.getChildren()) {
+                                    String updateUserId = keyId.getKey();
+                                    DatabaseReference myRef3 = database.getReference("users/" + updateUserId + "/contactsUbication/" + userKey);
+                                    myRef3.child("latitude").setValue(location.getLatitude());
+                                    myRef3.child("longitude").setValue(location.getLongitude());
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
 
                     }
-
                 }
             }
         };
 
+        //panico onClickListener
         panico.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                if(estado == false){
+                if (estado == false) {
                     contador++;
-                    if(contador==3){
+                    if (contador == 3) {
 
                         //Permisos
                         Permisos.requestPermission(
@@ -231,15 +224,39 @@ public class MainActivity extends AppCompatActivity {
                         );
 
                         panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
-                        estado=true;
+                        estado = true;
                         grabarAudio();
-                        myRef.child(userKey).child("state").setValue(estado);
+                        //cambiar estado en la bd
+                        DatabaseReference myRef = database.getReference("users/" + userKey);
+                        myRef.child("state").setValue(estado);
+                        //actualizar a todos los contactos
+                        DatabaseReference myRef2 = database.getReference("users/" + userKey + "/contacts");
+                        myRef2.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot keyId : dataSnapshot.getChildren()) {
+                                    String updateUserId = keyId.getKey();
+                                    DatabaseReference myRef3 = database.getReference("users/" + updateUserId + "/contacts/" + userKey);
+                                    myRef3.child("state").setValue(true);
+                                }
+                            }
+                        });
+
+                        myRef2.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot keyId : dataSnapshot.getChildren()) {
+                                    String updateUserId = keyId.getKey();
+                                    DatabaseReference myRef3 = database.getReference("users/" + updateUserId + "/contactsUbication/" + userKey);
+                                    myRef3.child("state").setValue(true);
+                                }
+                            }
+                        });
                         user.setState(true);
-                        singletoneUser.setData(user);
                     }
-                }else{
+                } else {
                     contador--;
-                    if(contador==0){
+                    if (contador == 0) {
                         avisoClave.setVisibility(View.VISIBLE);
                     }
                 }
@@ -250,28 +267,53 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String claves = clave.getText().toString();
-                if(claves.equals(claveVerdadera) || claves.equals(claveFalsa)){
+                if (claves.equals(claveVerdadera) || claves.equals(claveFalsa)) {
                     panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.verde_principal));
-                    estado=false;
+                    estado = false;
                     //parar la grabación
                     onRecord(false);
-                    myRef.child(userKey).child("state").setValue(estado);
+                    DatabaseReference myRef = database.getReference("users/" + userKey);
+                    myRef.child("state").setValue(estado);
+                    //actualizar a todos los contactos
+                    DatabaseReference myRef2 = database.getReference("users/" + userKey + "/contacts");
+                    myRef2.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot keyId : dataSnapshot.getChildren()) {
+                                String updateUserId = keyId.getKey();
+                                DatabaseReference myRef3 = database.getReference("users/" + updateUserId + "/contacts/" + userKey);
+                                myRef3.child("state").setValue(false);
+
+                            }
+                        }
+                    });
+
+                    myRef2.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot keyId : dataSnapshot.getChildren()) {
+                                String updateUserId = keyId.getKey();
+                                DatabaseReference myRef3 = database.getReference("users/" + updateUserId + "/contactsUbication/" + userKey);
+                                myRef3.child("state").setValue(false);
+                            }
+                        }
+                    });
+
                     avisoClave.setVisibility(View.INVISIBLE);
                     avisoMensaje.setVisibility(View.VISIBLE);
                     user.setState(false);
-                    singletoneUser.setData(user);
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Clave incorrecta", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
-        cancelarClave.setOnClickListener(new View.OnClickListener(){
+        cancelarClave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 avisoClave.setVisibility(View.INVISIBLE);
-                contador=3;
+                contador = 3;
             }
         });
 
@@ -294,37 +336,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //creamos el objeto que establece cada cuanto y como pido la localizacion
-    private LocationRequest createLocationRequest(){
+    private LocationRequest createLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return  locationRequest;
+        return locationRequest;
     }
 
     //activar la actualizacion automatica de la ubicacion
-    private void startLocationUpdates(){
-        if(ContextCompat.checkSelfPermission(this, LOCATION_NAME)== PackageManager.PERMISSION_GRANTED){
+    private void startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, LOCATION_NAME) == PackageManager.PERMISSION_GRANTED) {
             locationClient.requestLocationUpdates(locationRequest,
                     locationCallback, null);
         }
     }
 
     //pausar la actualizacion automatica de la ubicacion
-    private void stopLocationUpdates(){
+    private void stopLocationUpdates() {
         locationClient.removeLocationUpdates(locationCallback);
     }
 
     private void initUbicacion() {
-        Log.i(TAG,"ANTES -1");
         if (ContextCompat.checkSelfPermission(this, LOCATION_NAME) == PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG,"ANTES 0");
             checkSettingsLocation();
         }
     }
 
-    private void createNotificationChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    //Crear el canal de notificaciones
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "channel";
             String description = "Channel Desc";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
@@ -345,28 +386,34 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, fileName);
             //comienza a grabar
             onRecord(true);
-        }else{
+        } else {
             return;
         }
     }
 
-    private void cargarDatos(String userEmail){
+    private void cargarDatos(String userID) {
         //obtiene referencia de base de datos usuarios
-        myRef= database.getReference(PATH_USERS);
+        myRef = database.getReference(PATH_USERS + userID);
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Recorrer todos los elementos buscando el que tenga el correo adecuado
-                for (DataSnapshot elemento: snapshot.getChildren()) {
-                    if (elemento.child("email").getValue().equals(userEmail)) {
-                        //guardo el usuario
-                        user = elemento.getValue(User.class);
-                        saludo.setText("Hola " + user.getUserName()+"!");
-                        claveFalsa = user.getBait_phrase();
-                        claveVerdadera = user.getSafety_phrase();
-                        singletoneUser.setData(user);
-                    }
+                user = snapshot.getValue(User.class);
+                userKey = snapshot.getKey();
+                saludo.setText("Hola " + user.getUserName() + "!");
+                claveFalsa = user.getBait_phrase();
+                claveVerdadera = user.getSafety_phrase();
+                if(user.getState()==true){
+                    panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.rojo_principal));
+                    estado = true;
+                    contador = 3;
+                    grabarAudio();
+                }
+                else{
+                    panico.setBackgroundColor(panico.getContext().getResources().getColor(R.color.verde_principal));
+                    estado = false;
+                    contador = 0;
+
                 }
             }
 
@@ -376,18 +423,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       /* if (ContextCompat.checkSelfPermission(this, permAudio) == PackageManager.PERMISSION_GRANTED) {
-            user.setGrabarAudio(true);
-        }else{
-            user.setGrabarAudio(false);
-        }*/
     }
-    private void checkSettingsLocation(){
+
+    private void checkSettingsLocation() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         SettingsClient client = LocationServices.getSettingsClient(this);
-        Log.i(TAG,"ANTES");
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-        Log.i(TAG,"DESPUES");
         //si el GPS existe y ya esta prendido
         task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
             @Override
@@ -399,17 +440,18 @@ public class MainActivity extends AppCompatActivity {
         task.addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.i(TAG,"APAGADO");
+                Log.i(TAG, "APAGADO");
                 int statusCode = ((ApiException) e).getStatusCode();
                 switch (statusCode) {
                     case CommonStatusCodes.RESOLUTION_REQUIRED:
                         try {
                             // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
                             ResolvableApiException resolvable = (ResolvableApiException) e;
-                            resolvable.startResolutionForResult (MainActivity.this,SETTINGS_GPS);
+                            resolvable.startResolutionForResult(MainActivity.this, SETTINGS_GPS);
                         } catch (IntentSender.SendIntentException sendEx) {
 // Ignore the error.
-                        } break;
+                        }
+                        break;
                     //en caso de que el celular no tenga GPS
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         break;
@@ -441,7 +483,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startRecording() {
         recorder = new MediaRecorder();
-        singletoneUser.setRecorder(recorder);
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setOutputFile(fileName);
@@ -457,9 +498,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopRecording() {
-        if(recorder==null){
-            recorder = singletoneUser.getRecorder();
-        }
         recorder.stop();
         recorder.release();
         recorder = null;
@@ -471,60 +509,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i("FBSERVICE", "Invoking FB Service...");
     }
 
-    private void current(){
-        myRef.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot keyId: dataSnapshot.getChildren()){
-                    if(keyId.child("email").getValue(String.class).equals(userMail)){
-                        userKey = keyId.getKey();
-                    }
-                }
-                searchContacts();
-            }
-        });
-    }
-
-    private void searchContacts(){
-        mContacts.orderByKey().equalTo(userKey).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot keyId: dataSnapshot.getChildren()){
-                    for(DataSnapshot keyContact: keyId.getChildren()){
-                        userContacts.add(keyContact.getKey());
-                    }
-                }
-                readUsers();
-            }
-        });
-    }
-
-    private void readUsers() {
-        myRef.orderByKey().get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot keyId: dataSnapshot.getChildren()){
-                    int i = 0;
-                    if(!keyId.getKey().equals(userKey)){
-                        if(!isContact(keyId.getKey())){
-                            list.add(keyId.getValue(FindFriends.class));
-                            list.get(i).setKey(keyId.getKey());
-                            i++;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public static boolean isContact(String check){
-        return userContacts.contains(check);
-    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == LOCATION_PERMISSION_ID){
+        if (requestCode == LOCATION_PERMISSION_ID) {
             initUbicacion();
         }
     }
@@ -532,8 +521,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        userMail = mAuth.getCurrentUser().getEmail();
-        current();
+        cargarDatos(userID);
         startFirebaseStateListenerService();
     }
 }

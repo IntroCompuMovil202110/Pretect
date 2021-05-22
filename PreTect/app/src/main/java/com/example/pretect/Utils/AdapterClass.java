@@ -3,7 +3,6 @@ package com.example.pretect.Utils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pretect.AgregarActivity;
 import com.example.pretect.R;
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +36,7 @@ public class AdapterClass extends RecyclerView.Adapter<AdapterClass.FindFriendsV
     @NonNull
     @Override
     public FindFriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.agregar_usuario, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.agregar_usuario_item, parent, false);
         return new FindFriendsViewHolder(view, mListener);
     }
 
