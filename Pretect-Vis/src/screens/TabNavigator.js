@@ -19,7 +19,7 @@ const TabNavigator = () => {
         name='Home'
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Mapa Calor',
+          tabBarLabel: 'Mapa',
           tabBarIcon: ({ color }) => (<MaterialCommunityIcons name="map" size={26} color={color} />)
         }}
         />
@@ -27,7 +27,7 @@ const TabNavigator = () => {
         name='Age'
         component={AgeScreen}
         options={{
-          tabBarLabel: 'Por edades',
+          tabBarLabel: 'Edades',
           tabBarIcon: ({ color }) => (<MaterialCommunityIcons name="numeric" size={26} color={color} />)
         }}
         />
@@ -35,7 +35,7 @@ const TabNavigator = () => {
         name='Time'
         component={TimeScreen}
         options={{
-          tabBarLabel: 'Por horas',
+          tabBarLabel: 'Horas',
           tabBarIcon: ({ color }) => (<MaterialCommunityIcons name="clock-time-five-outline" size={26} color={color} />)
         }}
         />

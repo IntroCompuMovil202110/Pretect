@@ -1,6 +1,7 @@
 package com.example.pretect;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -59,9 +60,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.SimpleFormatter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     //Variables
     String claveFalsa;
     String claveVerdadera;
+    int edad;
     int contador = 0;
     boolean estado = false;
 
@@ -95,12 +101,15 @@ public class MainActivity extends AppCompatActivity {
     //
     //Base de datos
     private static final String PATH_USERS = "users/";
+    private static final String PATH_LOGS = "logs/";
     private static final String TAG = "MainScreen";
+    Location  toLogLocation;
 
     //Atributos
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference mContacts;
+    DatabaseReference mLogs;
     public static String CHANNEL_ID = "PRETECT";
 
     //firebase authentication
@@ -184,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mContacts = FirebaseDatabase.getInstance().getReference("contacts");
+        mLogs = FirebaseDatabase.getInstance().getReference(PATH_LOGS);
 
         //obtiene el correo
         String userEmail = mAuth.getCurrentUser().getEmail();
@@ -195,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
+                toLogLocation = location;
                 if(location != null){
                     Log.i(TAG, "Longitud " + location.getLongitude());
                     Log.i(TAG, "Latitud " + location.getLatitude());
@@ -236,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                         myRef.child(userKey).child("state").setValue(estado);
                         user.setState(true);
                         singletoneUser.setData(user);
+                        logPanicActivation();
                     }
                 }else{
                     contador--;
@@ -291,6 +303,17 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
+    }
+
+
+    private void logPanicActivation(){
+        DatabaseReference pushedLog = mLogs.push();
+        String keyToSave = pushedLog.getKey();
+        Date currentTime = Calendar.getInstance().getTime();
+       mLogs.child(keyToSave).child("latitude").setValue(toLogLocation.getLatitude());
+       mLogs.child(keyToSave).child("longitude").setValue(toLogLocation.getLongitude());
+       mLogs.child(keyToSave).child("age").setValue(edad);
+       mLogs.child(keyToSave).child("time").setValue(currentTime);
     }
 
     //creamos el objeto que establece cada cuanto y como pido la localizacion
@@ -366,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         claveFalsa = user.getBait_phrase();
                         claveVerdadera = user.getSafety_phrase();
                         singletoneUser.setData(user);
+                        edad = user.getAge();
                     }
                 }
             }
