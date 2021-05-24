@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
@@ -34,6 +37,8 @@ import com.here.sdk.core.Anchor2D;
 import com.here.sdk.core.Color;
 import com.here.sdk.core.GeoCoordinates;
 import com.here.sdk.core.GeoPolyline;
+import com.here.sdk.core.Location;
+import com.here.sdk.core.Metadata;
 import com.here.sdk.core.Point2D;
 import com.here.sdk.core.errors.InstantiationErrorException;
 import com.here.sdk.gestures.GestureState;
@@ -81,11 +86,16 @@ public class MapActivity extends AppCompatActivity {
     //Map
     private MapView mapView;
     private MapImage othersMapImage;
+    private MapImage dangerMapImage;
     private Button centerButton;
-    MapMarker clickMarker=null;
-    MapImage clickImage;
-    RoutingEngine routingEngine;
-    MapPolyline routeMapPolyline=null;
+    private MapMarker clickMarker=null;
+    private MapImage clickImage;
+    private RoutingEngine routingEngine;
+    private MapPolyline routeMapPolyline=null;
+    private ArrayList<MapMarker> markers=null;
+    private MapMarker topmostMapMarker=null;
+    TextView textView;
+    MapView.ViewPin viewPin;
 
     //My Location
     private android.location.Location myLocation;
@@ -98,6 +108,7 @@ public class MapActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference reference;
+    private String userKey;
 
     //singleton user
     SingletoneUser singletoneUser;
@@ -112,10 +123,14 @@ public class MapActivity extends AppCompatActivity {
         centerButton= findViewById(R.id.centerButton);
         centerButton.setVisibility(View.INVISIBLE);
         othersMapImage= MapImageFactory.fromResource(this.getResources(),R.drawable.others_marker);
+        dangerMapImage= MapImageFactory.fromResource(this.getResources(),R.drawable.danger_marker);
+        markers=new ArrayList<>();
 
         //DataBase
         mAuth= FirebaseAuth.getInstance();
         database= FirebaseDatabase.getInstance();
+        userKey=mAuth.getUid();
+
 
         //Menu Bar
         menuInferior = findViewById(R.id.bottom_nav_instructor);
@@ -251,24 +266,40 @@ public class MapActivity extends AppCompatActivity {
                 if (mapMarkerList.size() == 0) {
                     return;
                 }
-                MapMarker topmostMapMarker = mapMarkerList.get(0);
+                topmostMapMarker = mapMarkerList.get(0);
                 if(locationEnable){
                     showRoute(topmostMapMarker);
                 }else{
                     Toast.makeText(MapActivity.this, "No se puede mostrar la ruta sin localizacion actual", Toast.LENGTH_SHORT).show();
                 }
-
-//                Metadata metadata = topmostMapMarker.getMetadata();
-//                if (metadata != null) {
-//                    String message = "No message found.";
-//                    String string = metadata.getString("key_poi");
-//                    if (string != null) {
-//                        message = string;
-//                    }
-//                    return;
-//                }
+                if(!mapView.getViewPins().isEmpty()){
+                    mapView.getViewPins().get(0).unpin();
+                }
+                Metadata metadata = topmostMapMarker.getMetadata();
+                if (metadata != null) {
+                    String message = "No message found.";
+                    String string = metadata.getString("user");
+                    if (string != null && !string.equals("Username Not Found")) {
+                        message = string;
+                        createTextView(metadata.getDouble("lat"),metadata.getDouble("long"),message);
+                    }
+                    return;
+                }
             }
         });
+    }
+
+    private void createTextView(Double lat, Double aLong, String message) {
+        textView = new TextView(MapActivity.this);
+        textView.setTextColor(android.graphics.Color.parseColor("#FF6200EE"));
+        textView.setText(message);
+
+        LinearLayout linearLayout = new LinearLayout(MapActivity.this);
+        linearLayout.setBackgroundResource(R.color.teal_200);
+        linearLayout.setPadding(10, 10, 10, 10);
+        linearLayout.addView(textView);
+        viewPin = mapView.pinView(linearLayout, new GeoCoordinates(lat,aLong));
+        viewPin.setAnchorPoint(new Anchor2D(0.5f,2.8f));
     }
 
     private void showRoute(MapMarker destination) {
@@ -318,6 +349,11 @@ public class MapActivity extends AppCompatActivity {
             mapView.getMapScene().removeMapPolyline(routeMapPolyline);
         }
         routeMapPolyline = new MapPolyline(routeGeoPolyline,widthInPixels,Color.valueOf(0, 0.56f, 0.54f, 0.63f)); // RGBA
+        Metadata met=new Metadata();
+        met.setString("id",topmostMapMarker.getMetadata().getString("id"));
+        met.setDouble("lat",topmostMapMarker.getCoordinates().latitude);
+        met.setDouble("long",topmostMapMarker.getCoordinates().longitude);
+        routeMapPolyline.setMetadata(met);
         mapView.getMapScene().addMapPolyline(routeMapPolyline);
     }
 
@@ -354,9 +390,6 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onLocationUpdated(android.location.Location location) {
                 myLocation=location;
-                if(routeMapPolyline!=null){
-                    mapView.getMapScene().removeMapPolyline(routeMapPolyline);
-                }
                 if(myMarker==null){
                     Anchor2D anchor2D=new Anchor2D(0.5f,1.0f);
                     myMarker=new MapMarker(new GeoCoordinates(location.getLatitude(),location.getLongitude()),myMapImage,anchor2D);
@@ -365,6 +398,11 @@ public class MapActivity extends AppCompatActivity {
                 }else{
                     myMarker.setCoordinates(new GeoCoordinates(location.getLatitude(),location.getLongitude()));
                 }
+                if(routeMapPolyline!=null){
+                    MapMarker mapDest=new MapMarker(new GeoCoordinates(routeMapPolyline.getMetadata().getDouble("lat"),routeMapPolyline.getMetadata().getDouble("long")),othersMapImage);
+                    mapView.getMapScene().removeMapPolyline(routeMapPolyline);
+                    showRoute(mapDest);
+                }
             }
         });
     }
@@ -372,12 +410,61 @@ public class MapActivity extends AppCompatActivity {
     //ContactsLocation
     private void readOnce(){
         reference=database.getReference(PATH_USERS);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(userKey).child("contactsUbication").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean exist=false;
                 for(DataSnapshot single: snapshot.getChildren()){
-                    User user = single.getValue(User.class);
-                    addUserMarker(user);
+                    User user = new User();
+                    user.setUserName("Username Not Found");
+                    user.setState(false);
+                    for (DataSnapshot s : single.getChildren()){
+                        if(s.getKey().equals("longitude")){
+                            user.setLongitude(s.getValue(Double.class));
+                        }else if(s.getKey().equals("latitude")){
+                            user.setLatitude(s.getValue(Double.class));
+                        }else if(s.getKey().equals("state")){
+                            user.setState(s.getValue(Boolean.class));
+                        }else if(s.getKey().equals("userName")){
+                            user.setUserName(s.getValue(String.class));
+                        }
+                    }
+                    user.setId(single.getKey());
+                    exist=false;
+                    if(!markers.isEmpty()){
+                        for (MapMarker marker: markers) {
+                            if(marker.getMetadata().getString("id").equals(user.getId())){
+                                if(!mapView.getViewPins().isEmpty()){
+                                    if(mapView.getViewPins().get(0).getGeoCoordinates().latitude==marker.getCoordinates().latitude && mapView.getViewPins().get(0).getGeoCoordinates().longitude==marker.getCoordinates().longitude){
+                                        mapView.getViewPins().get(0).unpin();
+                                        if(!user.getUserName().equals("Username Not Found")){
+                                            createTextView(user.getLatitude(), user.getLongitude(),user.getUserName());
+                                        }
+                                    }
+                                }
+                                marker.setCoordinates(new GeoCoordinates(user.getLatitude(), user.getLongitude()));
+                                if(user.getState()){
+                                    marker.setImage(dangerMapImage);
+                                }else{
+                                    marker.setImage(othersMapImage);
+                                }
+                                exist=true;
+                                if(routeMapPolyline!=null && routeMapPolyline.getMetadata().getString("id").equals(user.getId())){
+                                    if(routeMapPolyline.getMetadata().getDouble("lat")!=user.getLatitude() || routeMapPolyline.getMetadata().getDouble("long")!=user.getLongitude()){
+                                        mapView.getMapScene().removeMapPolyline(routeMapPolyline);
+                                        showRoute(marker);
+                                    }else{
+                                        Toast.makeText(MapActivity.this, "AJA", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }
+                        if(!exist){
+                            addUserMarker(user);
+                        }
+                    }else{
+                        addUserMarker(user);
+                    }
                 }
             }
 
@@ -392,7 +479,19 @@ public class MapActivity extends AppCompatActivity {
     private void addUserMarker(User user) {
         if(user.getLatitude()!= Double.MIN_VALUE && user.getLongitude()!=Double.MIN_VALUE){
             Anchor2D anchor2D=new Anchor2D(0.5f,1.0f);
-            MapMarker othersMapMarker=new MapMarker(new GeoCoordinates(user.getLatitude(),user.getLongitude()),othersMapImage,anchor2D);
+            MapMarker othersMapMarker;
+            if(user.getState()){
+                othersMapMarker=new MapMarker(new GeoCoordinates(user.getLatitude(),user.getLongitude()),dangerMapImage,anchor2D);
+            }else{
+                othersMapMarker=new MapMarker(new GeoCoordinates(user.getLatitude(),user.getLongitude()),othersMapImage,anchor2D);
+            }
+            Metadata met=new Metadata();
+            met.setString("user",user.getUserName());
+            met.setString("id",user.getId());
+            met.setDouble("lat",user.getLatitude());
+            met.setDouble("long",user.getLongitude());
+            othersMapMarker.setMetadata(met);
+            markers.add(othersMapMarker);
             mapView.getMapScene().addMapMarker(othersMapMarker);
         }
     }
