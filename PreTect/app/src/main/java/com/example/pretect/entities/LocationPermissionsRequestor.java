@@ -46,7 +46,7 @@ public class LocationPermissionsRequestor {
         try {
             PackageInfo packageInfo = activity.getPackageManager().getPackageInfo(
                     activity.getPackageName(), PackageManager.GET_PERMISSIONS);
-            if (packageInfo.requestedPermissions != null) {
+            if (packageInfo.requestedPermissions != null && (packageInfo.requestedPermissions.equals(Manifest.permission.ACCESS_FINE_LOCATION)||packageInfo.requestedPermissions.equals(Manifest.permission.ACCESS_COARSE_LOCATION))) {
                 for (String permission : packageInfo.requestedPermissions) {
                     if (ContextCompat.checkSelfPermission(
                             activity, permission) != PackageManager.PERMISSION_GRANTED) {
