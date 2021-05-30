@@ -11,6 +11,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -375,7 +376,10 @@ public class MapActivity extends AppCompatActivity {
             locationEnable=true;
             myMapImage= MapImageFactory.fromResource(this.getResources(),R.drawable.my_marker);
             platformPositioningProvider = new PlatformPositioningProvider(MapActivity.this);
-            centerButton.setVisibility(View.VISIBLE);
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                centerButton.setVisibility(View.VISIBLE);
+            }
             starLocating();
         }
         loadMapScene();
@@ -537,7 +541,10 @@ public class MapActivity extends AppCompatActivity {
     //Extra Services
     public void centerMap(View view){
         if(locationEnable){
-            mapView.getCamera().lookAt(new GeoCoordinates(myLocation.getLatitude(),myLocation.getLongitude()),2500);
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                mapView.getCamera().lookAt(new GeoCoordinates(myLocation.getLatitude(),myLocation.getLongitude()),2500);
+            }
         }
     }
 
