@@ -104,6 +104,7 @@ public class AgregarAdapter extends BaseAdapter {
                             myRef2.child("userName").setValue(nombreMio);
                         }
                     });
+                    boton.setText("Enviado");
                 }else if(boton.getText().equals("solicitado")){
                     DatabaseReference myRef = database.getReference("users/" + idMyUser + "/contacts/" + currentItem.getId()+ "/");
                     myRef.child("solicitud").setValue("aceptado");

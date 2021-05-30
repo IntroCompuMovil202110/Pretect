@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
     //Paths
     private static final String PATH_USERS = "users/";
     private static final String PATH_LOGS = "logs/";
-    private static final String TAG = "MainScreen";
     Location  toLogLocation;
 
     //Atributos
@@ -281,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         user.setState(true);
-                        singletoneUser.setData(user);
                         logPanicActivation();
                     }
                 } else {
