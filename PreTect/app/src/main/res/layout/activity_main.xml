@@ -45,6 +45,20 @@
             android:textColor="@color/black"
             android:textSize="24dp" />
 
+        <Button
+            android:id="@+id/tituloNoticia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="50dp"
+            android:background="@android:color/transparent"
+            android:backgroundTint="#00FFFFFF"
+            android:shadowColor="#00FFFFFF"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="0"
+            android:textColor="#673AB7" />
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_instructor"
             android:layout_width="match_parent"

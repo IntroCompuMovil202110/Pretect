@@ -27,6 +27,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
@@ -58,6 +66,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -66,6 +78,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.logging.SimpleFormatter;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> userContacts = new ArrayList<>();
 
     //UI
-    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje ;
+    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje, tituloNoticia ;
     RelativeLayout avisoClave, avisoMensaje;
     TextView clave, saludo;
     BottomNavigationView menuInferior;
@@ -88,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     int edad;
     int contador = 0;
     boolean estado = false;
+    JSONObject noticia = null;
 
     //Permisos
     String permAudio = Manifest.permission.RECORD_AUDIO;
@@ -143,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         saludo = findViewById(R.id.saludo);
         avisoClave = findViewById(R.id.avisoClave);
         avisoMensaje = findViewById(R.id.avisoMensaje);
+        tituloNoticia = findViewById(R.id.tituloNoticia);
 
         //Hacer los avisos adicionales invisibles
         avisoClave.setVisibility(View.INVISIBLE);
@@ -301,10 +316,57 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        tituloNoticia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), NoticiaActivity.class);
+                try {
+                    i.putExtra("TituloNoticia", noticia.getString("Title"));
+                    i.putExtra("ContenidoNoticia", noticia.getString("Content"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivity(i);
+            }
+        });
         createNotificationChannel();
 
     }
 
+    private void searchNews(){
+        Random random = new Random();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String advices = "https://health.gov/myhealthfinder/api/v3/topicsearch.json?lang=es&topicId=30537?Resources";
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, advices, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    JSONArray secciones = null;
+                    try {
+                        secciones = response.getJSONObject("Result")
+                                    .getJSONObject("Resources")
+                                    .getJSONArray("Resource")
+                                    .getJSONObject(0)
+                                    .getJSONObject("Sections")
+                                    .getJSONArray("section");
+
+                        noticia = secciones.getJSONObject(random.nextInt((secciones.length() - 1)));
+
+                        tituloNoticia.setText(noticia.getString("Title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("TAG", "Error handling rest invocation"+error.getCause());
+                }
+            }
+        );
+        queue.add(req);
+    }
 
     private void logPanicActivation(){
         DatabaseReference pushedLog = mLogs.push();
@@ -559,5 +621,6 @@ public class MainActivity extends AppCompatActivity {
         userMail = mAuth.getCurrentUser().getEmail();
         current();
         startFirebaseStateListenerService();
+        searchNews();
     }
 }
