@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> userContacts = new ArrayList<>();
 
     //UI
-    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje, tituloNoticia ;
+    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje, tituloNoticia, estaciones;
     RelativeLayout avisoClave, avisoMensaje;
     TextView clave, saludo;
     BottomNavigationView menuInferior;
@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         avisoClave = findViewById(R.id.avisoClave);
         avisoMensaje = findViewById(R.id.avisoMensaje);
         tituloNoticia = findViewById(R.id.tituloNoticia);
+        estaciones = findViewById(R.id.estaciones);
 
         //Hacer los avisos adicionales invisibles
         avisoClave.setVisibility(View.INVISIBLE);
@@ -329,6 +330,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        estaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), EstacionesActivity.class);
+                startActivity(i);
+            }
+        });
+
         createNotificationChannel();
 
     }
