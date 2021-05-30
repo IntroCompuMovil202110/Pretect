@@ -1,6 +1,7 @@
 package com.example.pretect;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +27,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
 import com.example.pretect.Utils.Permisos;
@@ -57,11 +66,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
+import java.util.logging.SimpleFormatter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<FindFriends> list = new ArrayList<>();
     static ArrayList<String> userContacts = new ArrayList<>();
 
-    //Views
-    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje;
+    //UI
+    Button panico, aceptarClave, cancelarClave, aceptarMensaje, cancelarMensaje, tituloNoticia, estaciones;
     RelativeLayout avisoClave, avisoMensaje;
     TextView clave, saludo;
     BottomNavigationView menuInferior;
@@ -83,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
     //Variables
     String claveFalsa;
     String claveVerdadera;
+    int edad;
     int contador = 0;
     boolean estado = false;
+    JSONObject noticia = null;
 
     //Permisos
     String permAudio = Manifest.permission.RECORD_AUDIO;
@@ -99,11 +119,15 @@ public class MainActivity extends AppCompatActivity {
     //Base de datos
     //Paths
     private static final String PATH_USERS = "users/";
+    private static final String PATH_LOGS = "logs/";
+    private static final String TAG = "MainScreen";
+    Location  toLogLocation;
 
     //Atributos
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference mContacts;
+    DatabaseReference mLogs;
     public static String CHANNEL_ID = "PRETECT";
 
     //firebase authentication
@@ -135,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
         saludo = findViewById(R.id.saludo);
         avisoClave = findViewById(R.id.avisoClave);
         avisoMensaje = findViewById(R.id.avisoMensaje);
+        tituloNoticia = findViewById(R.id.tituloNoticia);
+        estaciones = findViewById(R.id.estaciones);
 
         //Hacer los avisos adicionales invisibles
         avisoClave.setVisibility(View.INVISIBLE);
@@ -166,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mContacts = FirebaseDatabase.getInstance().getReference("contacts");
+        mLogs = FirebaseDatabase.getInstance().getReference(PATH_LOGS);
 
         //obtiene el correo
         userID = mAuth.getCurrentUser().getUid();
@@ -176,7 +203,8 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
-                if (location != null) {
+                toLogLocation = location;
+                if(location != null){
                     Log.i(TAG, "Longitud " + location.getLongitude());
                     Log.i(TAG, "Latitud " + location.getLatitude());
                     try {
@@ -253,6 +281,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         user.setState(true);
+                        singletoneUser.setData(user);
+                        logPanicActivation();
                     }
                 } else {
                     contador--;
@@ -331,8 +361,75 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        tituloNoticia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), NoticiaActivity.class);
+                try {
+                    i.putExtra("TituloNoticia", noticia.getString("Title"));
+                    i.putExtra("ContenidoNoticia", noticia.getString("Content"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivity(i);
+            }
+        });
+
+        estaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), EstacionesActivity.class);
+                startActivity(i);
+            }
+        });
+
         createNotificationChannel();
 
+    }
+
+    private void searchNews(){
+        Random random = new Random();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String advices = "https://health.gov/myhealthfinder/api/v3/topicsearch.json?lang=es&topicId=30537?Resources";
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, advices, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    JSONArray secciones = null;
+                    try {
+                        secciones = response.getJSONObject("Result")
+                                    .getJSONObject("Resources")
+                                    .getJSONArray("Resource")
+                                    .getJSONObject(0)
+                                    .getJSONObject("Sections")
+                                    .getJSONArray("section");
+
+                        noticia = secciones.getJSONObject(random.nextInt((secciones.length() - 1)));
+
+                        tituloNoticia.setText(noticia.getString("Title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("TAG", "Error handling rest invocation"+error.getCause());
+                }
+            }
+        );
+        queue.add(req);
+    }
+
+    private void logPanicActivation(){
+        DatabaseReference pushedLog = mLogs.push();
+        String keyToSave = pushedLog.getKey();
+        Date currentTime = Calendar.getInstance().getTime();
+       mLogs.child(keyToSave).child("latitude").setValue(toLogLocation.getLatitude());
+       mLogs.child(keyToSave).child("longitude").setValue(toLogLocation.getLongitude());
+       mLogs.child(keyToSave).child("age").setValue(edad);
+       mLogs.child(keyToSave).child("time").setValue(currentTime);
     }
 
     //creamos el objeto que establece cada cuanto y como pido la localizacion
@@ -523,5 +620,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         cargarDatos(userID);
         startFirebaseStateListenerService();
+        searchNews();
     }
 }
