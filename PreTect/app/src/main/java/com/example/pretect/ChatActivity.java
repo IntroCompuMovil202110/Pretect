@@ -31,10 +31,10 @@ public class ChatActivity extends AppCompatActivity {
 
         currentUser = (User) getIntent().getExtras().get("user");
 
-        chatTitle = (TextView) findViewById(R.id.chatUserName);
-        chatEntries = (LinearLayout) findViewById(R.id.chatEntries);
-        send = (ImageButton) findViewById(R.id.sendButton);
-        input = (TextInputEditText) findViewById(R.id.chatTextInput); 
+        //chatTitle = (TextView) findViewById(R.id.chatUserName);
+        //chatEntries = (LinearLayout) findViewById(R.id.chatEntries);
+        //send = (ImageButton) findViewById(R.id.sendButton);
+        //input = (TextInputEditText) findViewById(R.id.chatTextInput);
         
         chatTitle.setText(currentUser.getName());
 
