@@ -27,29 +27,16 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb5b2f9e-f3ae-40f7-afd4-3eae46ec5726" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/entities/chatEntities/FriendlyMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/entities/chatEntities/MessageViewHolder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/entities/chatEntities/MyButtonObserver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/entities/chatEntities/MyScrollToBottomObserver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/item_message.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/menu/main_menu.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/values/dimens.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Pretect.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Pretect.iml" afterDir="false" />
+    <list default="true" id="bb5b2f9e-f3ae-40f7-afd4-3eae46ec5726" name="Default Changelist" comment="Version inicial de chat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/PictureNameAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_messages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_messages.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[SerialNumber@85326c27]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@/home/jorge/.android/avd/Pixel_3a_API_30_x86.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/PreTect">
       <ProjectState />
@@ -78,6 +65,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SET_USER_NAME_GLOBALLY" value="false" />
   </component>
   <component name="ProjectId" id="1p4972bNwMsvhSfsacCCvyytiO8" />
   <component name="ProjectViewState">
@@ -196,6 +184,14 @@
       <option name="presentableId" value="Default" />
       <updated>1614431327063</updated>
     </task>
+    <task id="LOCAL-00001" summary="Version inicial de chat">
+      <created>1622436710063</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1622436710063</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -209,6 +205,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Version inicial de chat" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version inicial de chat" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1846" y="302" width="950" height="516" key="#PSD" timestamp="1622429512242">
@@ -256,6 +256,10 @@
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
     <state x="1815" y="186" key="SettingsEditor/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622434738415" />
+    <state x="2109" y="481" width="423" height="158" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1622437687269">
+      <screen x="1366" y="0" width="1920" height="1200" />
+    </state>
+    <state x="2109" y="481" width="423" height="158" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622437687269" />
     <state x="1989" y="252" width="672" height="678" key="search.everywhere.popup" timestamp="1622435486814">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>

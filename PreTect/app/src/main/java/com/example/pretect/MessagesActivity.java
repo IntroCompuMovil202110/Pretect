@@ -62,6 +62,7 @@ public class MessagesActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     public static final String MESSAGES_CHILD = "messages";
+    public String conversation_name = "";
     public static final String ANONYMOUS = "anonymous";
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
 
