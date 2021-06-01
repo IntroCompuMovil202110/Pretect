@@ -50,9 +50,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,6 +65,7 @@ public class MessagesActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     public String MESSAGES_CHILD = "";
+    public String USER_NAME = "";
     public String conversation_name = "";
     public static final String ANONYMOUS = "anonymous";
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
@@ -114,12 +117,16 @@ public class MessagesActivity extends AppCompatActivity {
         String thisUserId = user.getUid();
         String chatId = createChatId(otherUserId, thisUserId);
         MESSAGES_CHILD = "/chats/"+chatId;
-        Log.i("CHAT_ID_WILL_BE", MESSAGES_CHILD );
+        Log.i("CHAT_ID_WILL_BE", MESSAGES_CHILD);
 
 
         // Initialize Realtime Database
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference messagesRef = mDatabase.getReference().child(MESSAGES_CHILD);
+
+        DatabaseReference userRef = mDatabase.getReference().child("/users/"+user.getUid());
+        //USER_NAME = userRef.child("userName");
+
 
         // The FirebaseRecyclerAdapter class comes from the FirebaseUI library
         // See: https://github.com/firebase/FirebaseUI-Android
@@ -162,7 +169,7 @@ public class MessagesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FriendlyMessage friendlyMessage = new
-                        FriendlyMessage(mBinding.messageEditText.getText().toString(),
+                        FriendlyMessage(USER_NAME + ": " + mBinding.messageEditText.getText().toString(),
                         getUserName());
 
                 mDatabase.getReference().child(MESSAGES_CHILD).push().setValue(friendlyMessage);
@@ -170,6 +177,7 @@ public class MessagesActivity extends AppCompatActivity {
             }
         });
 
+        /*
         // When the image button is clicked, launch the image picker
         mBinding.addMessageImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,13 +188,29 @@ public class MessagesActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_IMAGE);
             }
         });
+
+         */
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in.
-        // TODO: Add code to check if user is signed in.
+        //obtiene referencia de base de datos usuarios
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + mFirebaseAuth.getCurrentUser().getUid());
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                USER_NAME = user.getUserName();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -282,12 +306,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private String getUserName() {
 
-        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        if (user != null) {
-            return user.getDisplayName();
-        }
-
-        return ANONYMOUS;
+        return USER_NAME;
 
 
     }

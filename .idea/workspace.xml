@@ -27,16 +27,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb5b2f9e-f3ae-40f7-afd4-3eae46ec5726" name="Default Changelist" comment="Version inicial de chat">
-      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/ContactAdapter.java" afterDir="false" />
+    <list default="true" id="bb5b2f9e-f3ae-40f7-afd4-3eae46ec5726" name="Default Changelist" comment="Chat Funciona">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/AgregarActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/AgregarActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/Utils/Functions.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/Utils/Functions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/AgregarAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/AgregarAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_agregar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_agregar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_messages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_messages.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622436710063</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Chat Funciona">
+      <created>1622526045234</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1622526045234</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -215,7 +216,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Version inicial de chat" />
-    <option name="LAST_COMMIT_MESSAGE" value="Version inicial de chat" />
+    <MESSAGE value="Chat Funciona" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chat Funciona" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1846" y="302" width="950" height="516" key="#PSD" timestamp="1622429512242">
