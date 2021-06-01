@@ -1,47 +1,26 @@
 package com.example.pretect;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pretect.Utils.AdapterClass;
-import com.example.pretect.Utils.FindFriends;
 import com.example.pretect.Utils.Functions;
-import com.example.pretect.Utils.UsersAdapter;
 import com.example.pretect.adapters.AgregarAdapter;
 import com.example.pretect.entities.User;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -92,7 +71,7 @@ public class AgregarActivity extends AppCompatActivity {
         loadContactos();
 
         //inflate
-        mlista =  findViewById(R.id.contactsList);
+        mlista =  findViewById(R.id.messagesList);
         userSearch=findViewById(R.id.userSearch);
         agregarAdapter = new AgregarAdapter(usuarios,this,usuario.getUid(),database);
         mlista.setAdapter(agregarAdapter);

@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AgregarAdapter extends BaseAdapter {
 
@@ -113,6 +114,23 @@ public class AgregarAdapter extends BaseAdapter {
                     myRef2.child("solicitud").setValue("aceptado");
                     myRef2.child("state").setValue(false);
 
+                    //agregar chat
+                    String chatId = createChatId(currentItem.getId(), idMyUser);
+                    Log.i("CHATID", chatId);
+                    //1. Agregar un chat nuevo a /chats
+                    DatabaseReference myChatRef = database.getReference("chats/"+ chatId +"/");
+                    //2. Agregar miembros a /chats/id/miembros
+                    myChatRef.child("members").child("user1").setValue(idMyUser);
+                    myChatRef.child("members").child("user2").setValue(currentItem.getId());
+                    //3. users/idMyUser/chats/id/nombre
+                    DatabaseReference userChatRef = database.getReference("users/" + idMyUser + "/chats/");
+                    userChatRef.child(chatId);
+                    userChatRef.child("nombre").setValue(currentItem.getName());
+                    //4. users/currentItem.getId()/chats/id/nombre
+                    DatabaseReference otherUserChatRef = database.getReference("users/" + currentItem.getId() + "/chats/" );
+                    userChatRef.child(chatId);
+                    otherUserChatRef.child("nombre").setValue(nombreMio);
+
                     //crear path de localizaciones
                     DatabaseReference myRef3 = database.getReference("users/" + idMyUser + "/contactsUbication/" + currentItem.getId()+ "/");
                     myRef3.child("longitude").setValue(0);
@@ -143,5 +161,14 @@ public class AgregarAdapter extends BaseAdapter {
         nombre.setText(currentItem.getUserName());
         //Picasso.with(c).load(currentItem.getFoto()).resize(100,100).into(imagen);
         return convertView;
+    }
+    private String createChatId(String currentItemId, String idMyUser){
+        ArrayList<String> ids = new ArrayList<String>();
+        ids.add(currentItemId);
+        ids.add(idMyUser);
+        //Ordena los ids alfabeticamente
+        Collections.sort(ids);
+        //Retorna "ab" donde a es el id menor alfabeticamente
+        return ids.get(0) + ids.get(1);
     }
 }

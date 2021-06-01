@@ -28,15 +28,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb5b2f9e-f3ae-40f7-afd4-3eae46ec5726" name="Default Changelist" comment="Version inicial de chat">
+      <change afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/ContactAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/AgregarActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/AgregarActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/ChatActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/MessagesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/Utils/Functions.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/Utils/Functions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/AgregarAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/java/com/example/pretect/adapters/AgregarAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_agregar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_agregar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PreTect/app/src/main/res/layout/activity_chat.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@/home/jorge/.android/avd/Pixel_3a_API_30_x86.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[SerialNumber@85326c27]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/PreTect">
       <ProjectState />
@@ -57,9 +64,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="layoutResourceFile" />
         <option value="resourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -236,22 +243,22 @@
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state x="1500" y="455" key="FileChooserDialogImpl/0.0.3440.1400@0.0.3440.1400" timestamp="1619459570201" />
-    <state width="1874" height="331" key="GridCell.Tab.0.bottom" timestamp="1622436516953">
+    <state width="1106" height="331" key="GridCell.Tab.0.bottom" timestamp="1622525516919">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
-    <state width="1874" height="331" key="GridCell.Tab.0.bottom/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622436516953" />
-    <state width="1874" height="331" key="GridCell.Tab.0.center" timestamp="1622436516953">
+    <state width="1106" height="331" key="GridCell.Tab.0.bottom/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622525516919" />
+    <state width="1106" height="331" key="GridCell.Tab.0.center" timestamp="1622525516918">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
-    <state width="1874" height="331" key="GridCell.Tab.0.center/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622436516953" />
-    <state width="1874" height="331" key="GridCell.Tab.0.left" timestamp="1622436516953">
+    <state width="1106" height="331" key="GridCell.Tab.0.center/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622525516918" />
+    <state width="1106" height="331" key="GridCell.Tab.0.left" timestamp="1622525516918">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
-    <state width="1874" height="331" key="GridCell.Tab.0.left/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622436516953" />
-    <state width="1874" height="331" key="GridCell.Tab.0.right" timestamp="1622436516953">
+    <state width="1106" height="331" key="GridCell.Tab.0.left/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622525516918" />
+    <state width="1106" height="331" key="GridCell.Tab.0.right" timestamp="1622525516919">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
-    <state width="1874" height="331" key="GridCell.Tab.0.right/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622436516953" />
+    <state width="1106" height="331" key="GridCell.Tab.0.right/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622525516919" />
     <state x="1815" y="186" key="SettingsEditor" timestamp="1622434738415">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
@@ -260,9 +267,9 @@
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
     <state x="2109" y="481" width="423" height="158" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622437687269" />
-    <state x="1989" y="252" width="672" height="678" key="search.everywhere.popup" timestamp="1622435486814">
+    <state x="1989" y="252" width="672" height="678" key="search.everywhere.popup" timestamp="1622524466214">
       <screen x="1366" y="0" width="1920" height="1200" />
     </state>
-    <state x="1989" y="252" width="672" height="678" key="search.everywhere.popup/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622435486814" />
+    <state x="1989" y="252" width="672" height="678" key="search.everywhere.popup/0.0.1366.768/1366.0.1920.1200@1366.0.1920.1200" timestamp="1622524466214" />
   </component>
 </project>

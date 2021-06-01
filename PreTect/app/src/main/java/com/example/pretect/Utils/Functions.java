@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.example.pretect.AgregarActivity;
 import com.example.pretect.AjustesActivity;
+import com.example.pretect.ChatActivity;
 import com.example.pretect.MainActivity;
 import com.example.pretect.MapActivity;
 import com.example.pretect.MessagesActivity;
@@ -29,7 +30,7 @@ public class Functions {
                     context.startActivity(new Intent(context, AjustesActivity.class));
                     return true;
                 case R.id.chat_navigation:
-                    Intent intent = new Intent(context, MessagesActivity.class);
+                    Intent intent = new Intent(context, ChatActivity.class);
                     //ArrayList<User> contacts = User.getContacts();
                     //Bundle bundle = new Bundle();
                     //bundle.putSerializable("contacts", contacts);

@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -61,7 +62,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    public static final String MESSAGES_CHILD = "messages";
+    public String MESSAGES_CHILD = "";
     public String conversation_name = "";
     public static final String ANONYMOUS = "anonymous";
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
@@ -87,6 +88,10 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
+
         // This codelab uses View Binding
         // See: https://developer.android.com/topic/libraries/view-binding
         mBinding = ActivityMessagesBinding.inflate(getLayoutInflater());
@@ -102,6 +107,14 @@ public class MessagesActivity extends AppCompatActivity {
             return;
         }
 
+
+        Intent intent = getIntent();
+        String otherUserId = intent.getStringExtra("contactId");
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        String thisUserId = user.getUid();
+        String chatId = createChatId(otherUserId, thisUserId);
+        MESSAGES_CHILD = "/chats/"+chatId;
+        Log.i("CHAT_ID_WILL_BE", MESSAGES_CHILD );
 
 
         // Initialize Realtime Database
@@ -268,7 +281,7 @@ public class MessagesActivity extends AppCompatActivity {
 
 
     private String getUserName() {
-        /*
+
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
             return user.getDisplayName();
@@ -276,7 +289,15 @@ public class MessagesActivity extends AppCompatActivity {
 
         return ANONYMOUS;
 
-         */
-        return "Jorge";
+
+    }
+    private String createChatId(String currentItemId, String idMyUser){
+        ArrayList<String> ids = new ArrayList<String>();
+        ids.add(currentItemId);
+        ids.add(idMyUser);
+        //Ordena los ids alfabeticamente
+        Collections.sort(ids);
+        //Retorna "ab" donde a es el id menor alfabeticamente
+        return ids.get(0) + ids.get(1);
     }
 }
